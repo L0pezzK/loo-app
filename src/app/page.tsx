@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { Search, Filter, Map as MapIcon, List as ListIcon, ChevronDown, MapPin, Bookmark, User } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Search, Filter, Map as MapIcon, LayoutGrid, ChevronDown, MapPin, Bookmark, User, Star } from 'lucide-react';
 import { mockBathrooms, Bathroom } from '@/data/bathrooms';
 import BathroomCard from '@/components/BathroomCard';
 import InteractiveMap from '@/components/Map';
@@ -11,6 +11,7 @@ import MapDirectionsCard from '@/components/MapDirectionsCard';
 import MapDashboard from '@/components/MapDashboard';
 import Navbar from '@/components/Navbar';
 import BathroomDetailView from '@/components/BathroomDetailView';
+import SavedView from '@/components/SavedView';
 import dynamic from 'next/dynamic';
 
 const DynamicMap = dynamic(() => import('@/components/Map'), {
@@ -21,7 +22,27 @@ const DynamicMap = dynamic(() => import('@/components/Map'), {
 export default function Home() {
   const [viewMode, setViewMode] = useState<'map' | 'list' | 'saved' | 'profile' | 'detail'>('map');
   const [selectedBathroom, setSelectedBathroom] = useState<Bathroom | null>(null);
+  const [savedIds, setSavedIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Load saved IDs from local storage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('loo-saved-ids');
+    if (saved) {
+      setSavedIds(JSON.parse(saved));
+    }
+  }, []);
+
+  // Sync saved IDs to local storage
+  useEffect(() => {
+    localStorage.setItem('loo-saved-ids', JSON.stringify(savedIds));
+  }, [savedIds]);
+
+  const toggleSave = (id: string) => {
+    setSavedIds(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
 
   const handleBathroomSelect = (bathroom: Bathroom) => {
     setSelectedBathroom(bathroom);
@@ -65,6 +86,8 @@ export default function Home() {
                   key={bathroom.id} 
                   bathroom={bathroom} 
                   onSelect={handleBathroomSelect}
+                  isSaved={savedIds.includes(bathroom.id)}
+                  onToggleSave={toggleSave}
                 />
               ))}
 

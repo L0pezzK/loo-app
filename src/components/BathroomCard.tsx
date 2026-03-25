@@ -5,9 +5,11 @@ import Link from 'next/link';
 interface BathroomCardProps {
   bathroom: Bathroom;
   onSelect?: (bathroom: Bathroom) => void;
+  isSaved?: boolean;
+  onToggleSave?: (id: string) => void;
 }
 
-export default function BathroomCard({ bathroom, onSelect }: BathroomCardProps) {
+export default function BathroomCard({ bathroom, onSelect, isSaved, onToggleSave }: BathroomCardProps) {
   // Extract arrondissement from address (e.g., "75008 Paris" -> "8")
   const arrondissementMatch = bathroom.address.match(/750(\d{2})/);
   const arrondissement = arrondissementMatch ? `${parseInt(arrondissementMatch[1])}e Arrondissement` : 'Paris';
@@ -68,8 +70,14 @@ export default function BathroomCard({ bathroom, onSelect }: BathroomCardProps) 
           <button className="flex-1 bg-[var(--surface-hover)] hover:bg-[var(--accent)] hover:text-[var(--surface)] text-white text-xs font-bold py-3 rounded-xl transition-all border border-[var(--border)] hover:border-transparent">
             Directions
           </button>
-          <button className="p-3 bg-[var(--surface-hover)] border border-[var(--border)] rounded-xl text-[var(--text-secondary)] hover:text-[var(--accent)] transition-all hover:bg-[var(--surface)]">
-            <Bookmark className="w-4 h-4" />
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleSave?.(bathroom.id);
+            }}
+            className={`p-3 border rounded-xl transition-all ${isSaved ? 'bg-[var(--accent)]/10 border-[var(--accent)] text-[var(--accent)] shadow-[0_0_15px_rgba(0,229,255,0.2)]' : 'bg-[var(--surface-hover)] border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-[var(--surface)]'}`}
+          >
+            <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
           </button>
         </div>
       </div>
