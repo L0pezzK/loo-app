@@ -139,7 +139,7 @@ export default function InteractiveMap({ onBathroomSelect, activeBathroomId, zoo
       {/* Adding custom css for the map layout */}
       <style dangerouslySetInnerHTML={{__html: `
         .leaflet-container {
-          background-color: #0B132A;
+          background-color: #f3f4f6;
           font-family: inherit;
         }
         .leaflet-control-attribution {

@@ -114,7 +114,7 @@ export default function Home() {
 
           {/* Right Cards Overlay */}
           {selectedBathroom && (
-            <div className="absolute top-1/2 -translate-y-1/2 right-12 z-[300] flex flex-col space-y-4">
+            <div className="absolute top-1/2 -translate-y-1/2 right-12 z-[1000] flex flex-col space-y-4">
               <MapDetailCard 
                 bathroom={selectedBathroom} 
                 onClose={() => setSelectedBathroom(null)} 
