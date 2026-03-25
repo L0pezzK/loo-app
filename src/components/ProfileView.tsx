@@ -33,12 +33,16 @@ export default function ProfileView({ savedCount, reviewCount, profile, onUpdate
   return (
     <div className="flex-1 bg-[var(--background)] flex overflow-hidden lg:h-full animate-in fade-in slide-in-from-bottom-4 duration-700">
       
-      <EditProfileModal 
-        isOpen={isEditModalOpen} 
-        onClose={() => setIsEditModalOpen(false)} 
-        onSave={onUpdateProfile} 
-        initialProfile={profile} 
-      />
+      {isEditModalOpen && (
+        <EditProfileModal 
+          isOpen={isEditModalOpen} 
+          onClose={() => setIsEditModalOpen(false)} 
+          onSave={(newProfile) => {
+            onUpdateProfile(newProfile);
+          }} 
+          initialProfile={profile} 
+        />
+      )}
       {/* Sidebar */}
       <aside className="w-80 border-r border-white/5 bg-black/20 flex flex-col p-8 shrink-0">
         <div className="mb-12">

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { X, User, Type, Save, CheckCircle2, Image as ImageIcon, Camera, Upload, RotateCcw } from 'lucide-react';
 
 interface EditProfileModalProps {
@@ -18,6 +18,14 @@ export default function EditProfileModal({ isOpen, onClose, onSave, initialProfi
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Sync state when initialProfile changes or modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setProfile(initialProfile);
+      setIsSuccess(false);
+    }
+  }, [isOpen, initialProfile]);
 
   const avatars = [
     "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=400",
