@@ -13,6 +13,7 @@ import Navbar from '@/components/Navbar';
 import BathroomDetailView from '@/components/BathroomDetailView';
 import SavedView from '@/components/SavedView';
 import CommunityReviewsView from '@/components/CommunityReviewsView';
+import ProfileView from '@/components/ProfileView';
 import dynamic from 'next/dynamic';
 
 const DynamicMap = dynamic(() => import('@/components/Map'), {
@@ -174,16 +175,9 @@ export default function Home() {
 
         {/* Profile Overlay */}
         {viewMode === 'profile' && (
-          <div className="absolute inset-0 bg-[var(--background)]/90 backdrop-blur-3xl z-[200] flex flex-col items-center justify-center p-12 text-center overflow-hidden">
+          <div className="absolute inset-0 z-[200] bg-[var(--background)] flex flex-col">
+            <ProfileView savedCount={savedIds.length} reviewCount={142} />
             <MapDashboard currentView={viewMode} onViewChange={setViewMode} />
-            <div className="w-24 h-24 bg-gradient-to-br from-[var(--accent)] to-blue-600 rounded-full flex items-center justify-center mb-8 shadow-2xl">
-              <User className="w-12 h-12 text-[var(--surface)]" />
-            </div>
-            <h2 className="text-4xl font-black text-white mb-2">Guest User</h2>
-            <p className="text-[var(--accent)] font-bold mb-8 uppercase tracking-widest text-sm">Premium Member</p>
-            <button className="px-10 py-4 bg-[var(--surface)] border border-white/10 rounded-2xl text-white font-bold hover:bg-[var(--surface-hover)] transition-all">
-              Edit Profile Settings
-            </button>
           </div>
         )}
       </div>

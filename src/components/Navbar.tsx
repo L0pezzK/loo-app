@@ -13,6 +13,7 @@ export default function Navbar({ currentView = 'list', onViewChange }: NavbarPro
     { label: 'List', id: 'list' as const },
     { label: 'Saved', id: 'saved' as const },
     { label: 'Reviews', id: 'reviews' as const },
+    { label: 'Profile', id: 'profile' as const },
   ];
 
   return (
