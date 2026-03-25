@@ -60,7 +60,7 @@ export default function AddReviewModal({ isOpen, onClose, onSubmit }: AddReviewM
   };
 
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6 sm:p-12">
+    <div className="fixed inset-0 z-[2000] flex items-center justify-center p-6 sm:p-12">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black/80 backdrop-blur-2xl animate-in fade-in duration-500"

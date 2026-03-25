@@ -17,7 +17,7 @@ export default function MapDashboard({ currentView, onViewChange }: MapDashboard
   ];
 
   return (
-    <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[1000] px-4 w-full max-w-lg">
+    <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[500] px-4 w-full max-w-lg">
       <div className="bg-[var(--surface)]/80 backdrop-blur-2xl p-2 rounded-[28px] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center justify-between">
         {items.map((item) => {
           const isActive = currentView === item.id;

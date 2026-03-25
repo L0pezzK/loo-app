@@ -85,10 +85,11 @@ export default function EditProfileModal({ isOpen, onClose, onSave, initialProfi
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Saving user profile...", profile);
     setIsSaving(true);
     
-    // Simulate save
-    setTimeout(() => {
+    // Immediate save for better responsiveness
+    try {
       onSave(profile);
       setIsSaving(false);
       setIsSuccess(true);
@@ -96,12 +97,15 @@ export default function EditProfileModal({ isOpen, onClose, onSave, initialProfi
       setTimeout(() => {
         setIsSuccess(false);
         onClose();
-      }, 1500);
-    }, 1200);
+      }, 1000);
+    } catch (err) {
+      console.error("Failed to save profile:", err);
+      setIsSaving(false);
+    }
   };
 
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6">
+    <div className="fixed inset-0 z-[2000] flex items-center justify-center p-6">
       <div 
         className="absolute inset-0 bg-black/80 backdrop-blur-2xl animate-in fade-in duration-500"
         onClick={onClose}
