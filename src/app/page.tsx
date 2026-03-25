@@ -6,6 +6,7 @@ import { mockBathrooms, Bathroom } from '@/data/bathrooms';
 import BathroomCard from '@/components/BathroomCard';
 import InteractiveMap from '@/components/Map';
 import FilterSidebar from '@/components/FilterSidebar';
+import MapDetailCard from '@/components/MapDetailCard';
 import dynamic from 'next/dynamic';
 
 const DynamicMap = dynamic(() => import('@/components/Map'), {
@@ -14,7 +15,8 @@ const DynamicMap = dynamic(() => import('@/components/Map'), {
 });
 
 export default function Home() {
-  const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
+  const [viewMode, setViewMode] = useState<'list' | 'map'>('map');
+  const [selectedBathroom, setSelectedBathroom] = useState<Bathroom | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredBathrooms = mockBathrooms.filter(bathroom => 
@@ -111,7 +113,20 @@ export default function Home() {
               </button>
             </div>
           </div>
-          <DynamicMap />
+          <DynamicMap 
+            onBathroomSelect={setSelectedBathroom} 
+            activeBathroomId={selectedBathroom?.id} 
+          />
+
+          {/* Right Detail Card Overlay */}
+          {selectedBathroom && (
+            <div className="absolute top-1/2 -translate-y-1/2 right-12 z-[300]">
+              <MapDetailCard 
+                bathroom={selectedBathroom} 
+                onClose={() => setSelectedBathroom(null)} 
+              />
+            </div>
+          )}
         </div>
       )}
     </div>

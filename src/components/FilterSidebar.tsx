@@ -1,6 +1,6 @@
 'use client';
 
-import { Accessibility, Coins, Baby, Search } from 'lucide-react';
+import { Accessibility, Coins, Baby, Search, Settings, HelpCircle } from 'lucide-react';
 
 export default function FilterSidebar() {
   const filters = [
@@ -13,7 +13,7 @@ export default function FilterSidebar() {
     <aside className="w-80 h-[calc(100vh-64px)] border-r border-[var(--border)] bg-[var(--background)] p-8 flex flex-col shrink-0">
       <div className="mb-10">
         <h2 className="text-xl font-bold text-white mb-2">Filters</h2>
-        <p className="text-xs text-[var(--text-secondary)] font-medium">Paris Amenities</p>
+        <p className="text-xs text-[var(--text-secondary)] font-medium">Paris City Guide</p>
       </div>
 
       <div className="space-y-4 mb-10">
@@ -51,9 +51,16 @@ export default function FilterSidebar() {
         </div>
       </div>
 
-      <button className="w-full py-4 bg-[var(--surface)] border border-[var(--border)] rounded-2xl text-white text-sm font-bold hover:bg-[var(--surface-hover)] transition-all mt-auto">
-        Apply Filters
-      </button>
+      <div className="mt-auto space-y-2">
+        <button className="w-full py-4 bg-[var(--surface)] border border-[var(--border)] rounded-2xl text-white text-sm font-bold hover:bg-[var(--surface-hover)] transition-all flex items-center space-x-3 px-6">
+          <Settings className="w-4 h-4 text-[var(--text-secondary)]" />
+          <span>Settings</span>
+        </button>
+        <button className="w-full py-4 bg-[var(--surface)] border border-[var(--border)] rounded-2xl text-white text-sm font-bold hover:bg-[var(--surface-hover)] transition-all flex items-center space-x-3 px-6">
+          <HelpCircle className="w-4 h-4 text-[var(--text-secondary)]" />
+          <span>Help</span>
+        </button>
+      </div>
     </aside>
   );
 }
