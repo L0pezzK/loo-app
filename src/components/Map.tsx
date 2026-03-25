@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { mockBathrooms, Bathroom } from '@/data/bathrooms';
-import { MapPin, Navigation, LocateFixed } from 'lucide-react';
+import { MapPin, Navigation, LocateFixed, Circle } from 'lucide-react';
 
 // Custom icons setup - Glowy blue dots as per design
 const createCustomIcon = (isActive: boolean) => {
@@ -19,6 +19,23 @@ const createCustomIcon = (isActive: boolean) => {
     `,
     iconSize: [24, 24],
     iconAnchor: [12, 12],
+  });
+};
+
+// User location icon
+const createUserIcon = () => {
+  return L.divIcon({
+    className: 'user-icon',
+    html: `
+      <div class="relative flex flex-col items-center">
+        <div class="w-10 h-10 bg-[var(--accent)]/20 rounded-full border-2 border-[var(--accent)] flex items-center justify-center shadow-[0_0_20px_rgba(0,229,255,0.4)]">
+          <div class="w-3 h-3 bg-[var(--accent)] rounded-full border-2 border-white"></div>
+        </div>
+        <div class="mt-1 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-black text-white uppercase tracking-widest border border-white/10">YOU</div>
+      </div>
+    `,
+    iconSize: [40, 60],
+    iconAnchor: [20, 50],
   });
 };
 
@@ -65,11 +82,14 @@ function LocateButton() {
 
 export default function InteractiveMap({ onBathroomSelect, activeBathroomId, zoom = 14 }: MapProps) {
   const position: L.LatLngExpression = [48.8566, 2.3522];
+  const userPosition: L.LatLngExpression = [48.8450, 2.3300]; // Mock user position
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const activeBathroom = mockBathrooms.find(b => b.id === activeBathroomId);
 
   if (!mounted) return <div className="w-full h-full bg-[var(--surface)] animate-pulse rounded-2xl flex items-center justify-center text-[var(--text-secondary)]">Loading Map...</div>;
 
@@ -87,6 +107,20 @@ export default function InteractiveMap({ onBathroomSelect, activeBathroomId, zoo
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
         />
         
+        {/* User Marker */}
+        <Marker position={userPosition} icon={createUserIcon()} />
+
+        {/* Route Line */}
+        {activeBathroom && (
+          <Polyline 
+            positions={[userPosition, [activeBathroom.lat, activeBathroom.lng]]} 
+            color="#00E5FF" 
+            dashArray="10, 15" 
+            weight={4}
+            opacity={0.6}
+          />
+        )}
+
         {mockBathrooms.map((bathroom) => (
           <Marker 
             key={bathroom.id} 

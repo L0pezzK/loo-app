@@ -7,6 +7,7 @@ import BathroomCard from '@/components/BathroomCard';
 import InteractiveMap from '@/components/Map';
 import FilterSidebar from '@/components/FilterSidebar';
 import MapDetailCard from '@/components/MapDetailCard';
+import MapDirectionsCard from '@/components/MapDirectionsCard';
 import MapDashboard from '@/components/MapDashboard';
 import dynamic from 'next/dynamic';
 
@@ -111,10 +112,14 @@ export default function Home() {
             activeBathroomId={selectedBathroom?.id} 
           />
 
-          {/* Right Detail Card Overlay */}
+          {/* Right Cards Overlay */}
           {selectedBathroom && (
-            <div className="absolute top-1/2 -translate-y-1/2 right-12 z-[300]">
+            <div className="absolute top-1/2 -translate-y-1/2 right-12 z-[300] flex flex-col space-y-4">
               <MapDetailCard 
+                bathroom={selectedBathroom} 
+                onClose={() => setSelectedBathroom(null)} 
+              />
+              <MapDirectionsCard 
                 bathroom={selectedBathroom} 
                 onClose={() => setSelectedBathroom(null)} 
               />
