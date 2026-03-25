@@ -1,5 +1,5 @@
 import { Feature } from '@/data/bathrooms';
-import { Wheelchair, Coins, Baby, Users, Clock } from 'lucide-react';
+import { Accessibility, Coins, Baby, Users, Clock } from 'lucide-react';
 
 interface FeatureTagProps {
   feature: Feature;
@@ -12,7 +12,7 @@ export default function FeatureTag({ feature }: FeatureTagProps) {
 
   switch (feature) {
     case 'Wheelchair Accessible':
-      icon = <Wheelchair className="w-3.5 h-3.5" />;
+      icon = <Accessibility className="w-3.5 h-3.5" />;
       bgClass = 'bg-blue-500/10';
       textClass = 'text-blue-400';
       break;
