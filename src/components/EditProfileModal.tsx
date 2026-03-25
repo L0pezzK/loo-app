@@ -1,0 +1,157 @@
+'use client';
+
+import { useState } from 'react';
+import { X, User, Type, Save, CheckCircle2, Image as ImageIcon } from 'lucide-react';
+
+interface EditProfileModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (profile: any) => void;
+  initialProfile: { name: string; bio: string; avatar: string };
+}
+
+export default function EditProfileModal({ isOpen, onClose, onSave, initialProfile }: EditProfileModalProps) {
+  const [profile, setProfile] = useState(initialProfile);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const avatars = [
+    "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=400",
+    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=400",
+    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400",
+    "https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&q=80&w=400",
+    "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=400"
+  ];
+
+  if (!isOpen && !isSuccess) return null;
+
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+    
+    // Simulate save
+    setTimeout(() => {
+      onSave(profile);
+      setIsSaving(false);
+      setIsSuccess(true);
+      
+      setTimeout(() => {
+        setIsSuccess(false);
+        onClose();
+      }, 1500);
+    }, 1200);
+  };
+
+  return (
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6">
+      <div 
+        className="absolute inset-0 bg-black/80 backdrop-blur-2xl animate-in fade-in duration-500"
+        onClick={onClose}
+      ></div>
+
+      <div className="relative w-full max-w-xl bg-[var(--surface)] border border-white/10 rounded-[48px] shadow-[0_50px_100px_rgba(0,0,0,0.8)] overflow-hidden animate-in zoom-in fade-in duration-500">
+        
+        {isSuccess ? (
+          <div className="p-20 text-center flex flex-col items-center justify-center space-y-6">
+            <div className="w-24 h-24 bg-[var(--accent)]/10 rounded-full flex items-center justify-center border-4 border-[var(--accent)]/30 animate-bounce">
+              <CheckCircle2 className="w-12 h-12 text-[var(--accent)]" />
+            </div>
+            <h3 className="text-3xl font-black text-white tracking-tighter">Profile Updated!</h3>
+            <p className="text-[var(--text-secondary)] text-sm max-w-[200px] mx-auto">Your identity has been reset on the relief map.</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSave} className="flex flex-col h-full">
+            {/* Header */}
+            <div className="p-8 pb-4 flex justify-between items-center border-b border-white/5">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-[var(--accent)]/10 rounded-2xl flex items-center justify-center border border-[var(--accent)]/20">
+                  <User className="w-5 h-5 text-[var(--accent)]" />
+                </div>
+                <h2 className="text-2xl font-black text-white tracking-tight">Edit Identity</h2>
+              </div>
+              <button 
+                type="button"
+                onClick={onClose}
+                className="p-3 hover:bg-white/5 rounded-full transition-all text-white/40 hover:text-white"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="p-8 space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+              
+              {/* Avatar Picker */}
+              <div className="space-y-4">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 block">Select Avatar</label>
+                <div className="flex flex-wrap gap-4">
+                  {avatars.map((url) => (
+                    <button
+                      key={url}
+                      type="button"
+                      onClick={() => setProfile({ ...profile, avatar: url })}
+                      className={`relative w-16 h-16 rounded-2xl overflow-hidden border-4 transition-all hover:scale-110 active:scale-90 ${profile.avatar === url ? 'border-[var(--accent)]' : 'border-transparent opacity-50 hover:opacity-100'}`}
+                    >
+                      <img src={url} className="w-full h-full object-cover" alt="Avatar preset" />
+                      {profile.avatar === url && (
+                        <div className="absolute inset-0 bg-[var(--accent)]/20 flex items-center justify-center">
+                          <CheckCircle2 className="w-6 h-6 text-white" />
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Name Input */}
+              <div className="space-y-4">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 block">Name</label>
+                <div className="relative group">
+                  <Type className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-[var(--accent)] transition-colors" />
+                  <input
+                    required
+                    type="text"
+                    value={profile.name}
+                    onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+                    className="w-full bg-[var(--background)] border border-white/5 rounded-2xl py-4 pl-12 pr-4 text-white font-bold focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/30 transition-all"
+                  />
+                </div>
+              </div>
+
+              {/* Bio Input */}
+              <div className="space-y-4">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 block">Bio</label>
+                <textarea
+                  required
+                  rows={3}
+                  value={profile.bio}
+                  onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+                  className="w-full bg-[var(--background)] border border-white/5 rounded-3xl p-6 text-white font-medium resize-none focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/30 transition-all"
+                ></textarea>
+              </div>
+
+            </div>
+
+            {/* Footer */}
+            <div className="p-8 pt-4 border-t border-white/5 flex justify-end">
+              <button 
+                type="submit"
+                disabled={isSaving}
+                className="px-10 py-5 bg-[var(--accent)] text-[var(--surface)] font-black rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center space-x-3"
+              >
+                {isSaving ? (
+                  <div className="w-5 h-5 border-2 border-[var(--surface)] border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" />
+                    <span>Save Identity</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}

@@ -26,19 +26,29 @@ export default function Home() {
   const [selectedBathroom, setSelectedBathroom] = useState<Bathroom | null>(null);
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [userProfile, setUserProfile] = useState({
+    name: 'Marc-Antoine',
+    bio: 'Loo connoisseur since 2022. On a mission to map every accessible facility in the city.',
+    avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=400'
+  });
 
-  // Load saved IDs from local storage on mount
+  // Load state from local storage on mount
   useEffect(() => {
-    const saved = localStorage.getItem('loo-saved-ids');
-    if (saved) {
-      setSavedIds(JSON.parse(saved));
-    }
+    const savedIdsValue = localStorage.getItem('loo-saved-ids');
+    if (savedIdsValue) setSavedIds(JSON.parse(savedIdsValue));
+
+    const savedProfile = localStorage.getItem('loo-user-profile');
+    if (savedProfile) setUserProfile(JSON.parse(savedProfile));
   }, []);
 
-  // Sync saved IDs to local storage
+  // Sync state to local storage
   useEffect(() => {
     localStorage.setItem('loo-saved-ids', JSON.stringify(savedIds));
   }, [savedIds]);
+
+  useEffect(() => {
+    localStorage.setItem('loo-user-profile', JSON.stringify(userProfile));
+  }, [userProfile]);
 
   const toggleSave = (id: string) => {
     setSavedIds(prev => 
@@ -176,7 +186,12 @@ export default function Home() {
         {/* Profile Overlay */}
         {viewMode === 'profile' && (
           <div className="absolute inset-0 z-[200] bg-[var(--background)] flex flex-col">
-            <ProfileView savedCount={savedIds.length} reviewCount={142} />
+            <ProfileView 
+              savedCount={savedIds.length} 
+              reviewCount={142} 
+              profile={userProfile}
+              onUpdateProfile={setUserProfile}
+            />
             <MapDashboard currentView={viewMode} onViewChange={setViewMode} />
           </div>
         )}

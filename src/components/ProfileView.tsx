@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { 
   User, 
   Settings, 
@@ -17,16 +18,27 @@ import {
   Globe,
   Map as MapIcon
 } from 'lucide-react';
+import EditProfileModal from './EditProfileModal';
 
 interface ProfileViewProps {
   savedCount: number;
   reviewCount: number;
+  profile: { name: string; bio: string; avatar: string };
+  onUpdateProfile: (profile: any) => void;
 }
 
-export default function ProfileView({ savedCount, reviewCount }: ProfileViewProps) {
+export default function ProfileView({ savedCount, reviewCount, profile, onUpdateProfile }: ProfileViewProps) {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
   return (
     <div className="flex-1 bg-[var(--background)] flex overflow-hidden lg:h-full animate-in fade-in slide-in-from-bottom-4 duration-700">
       
+      <EditProfileModal 
+        isOpen={isEditModalOpen} 
+        onClose={() => setIsEditModalOpen(false)} 
+        onSave={onUpdateProfile} 
+        initialProfile={profile} 
+      />
       {/* Sidebar */}
       <aside className="w-80 border-r border-white/5 bg-black/20 flex flex-col p-8 shrink-0">
         <div className="mb-12">
@@ -67,7 +79,7 @@ export default function ProfileView({ savedCount, reviewCount }: ProfileViewProp
             <div className="flex items-center space-x-8 relative z-10">
               <div className="relative">
                 <div className="w-32 h-32 rounded-full border-4 border-[var(--accent)] p-1 overflow-hidden shadow-2xl skew-y-1">
-                  <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=400" alt="Profile" className="w-full h-full object-cover rounded-full -skew-y-1" />
+                  <img src={profile.avatar} alt="Profile" className="w-full h-full object-cover rounded-full -skew-y-1" />
                 </div>
                 <div className="absolute -bottom-2 -right-2 bg-[var(--accent)] text-[var(--surface)] text-[9px] font-black px-3 py-1 rounded-full border-4 border-[#0a0c10] uppercase tracking-widest shadow-lg">
                   GUIDE
@@ -75,17 +87,20 @@ export default function ProfileView({ savedCount, reviewCount }: ProfileViewProp
               </div>
               <div>
                 <div className="flex items-center space-x-3 mb-2">
-                  <h3 className="text-4xl font-black text-white tracking-tighter leading-none">Marc-Antoine</h3>
+                  <h3 className="text-4xl font-black text-white tracking-tighter leading-none">{profile.name}</h3>
                   <span className="bg-purple-500/10 text-purple-300 border border-purple-500/20 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center space-x-1">
                     <CheckCircle2 className="w-2.5 h-2.5" />
                     <span>Pro Member</span>
                   </span>
                 </div>
                 <p className="text-[var(--text-secondary)] font-medium max-w-sm text-sm leading-relaxed mb-6">
-                  Loo connoisseur since 2022. On a mission to map every accessible facility in the city.
+                  {profile.bio}
                 </p>
                 <div className="flex space-x-4">
-                  <button className="bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/20 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-[var(--accent)] hover:text-[var(--surface)] transition-all">
+                  <button 
+                    onClick={() => setIsEditModalOpen(true)}
+                    className="bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/20 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-[var(--accent)] hover:text-[var(--surface)] transition-all"
+                  >
                     Edit Profile
                   </button>
                   <button className="bg-white/5 text-white/40 border border-white/10 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest hover:text-white hover:bg-white/10 transition-all">
