@@ -21,12 +21,17 @@ const DynamicMap = dynamic(() => import('@/components/Map'), {
   loading: () => <div className="w-full h-full bg-[var(--surface)] animate-pulse rounded-3xl" />
 });
 
+import { translations, Language } from '@/data/translations';
+
 export default function Home() {
   const [viewMode, setViewMode] = useState<'map' | 'list' | 'saved' | 'profile' | 'detail' | 'reviews'>('map');
   const [selectedBathroom, setSelectedBathroom] = useState<Bathroom | null>(null);
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [activeLanguage, setActiveLanguage] = useState<Language>('en');
+
+  const t = translations[activeLanguage];
   const [userProfile, setUserProfile] = useState({
     name: 'Marc-Antoine',
     bio: 'Loo connoisseur since 2022. On a mission to map every accessible facility in the city.',
@@ -43,6 +48,9 @@ export default function Home() {
 
     const savedTheme = localStorage.getItem('loo-dark-mode');
     if (savedTheme !== null) setIsDarkMode(JSON.parse(savedTheme));
+
+    const savedLang = localStorage.getItem('loo-language');
+    if (savedLang) setActiveLanguage(savedLang as Language);
   }, []);
 
   // Sync state to local storage
@@ -57,6 +65,10 @@ export default function Home() {
   useEffect(() => {
     localStorage.setItem('loo-dark-mode', JSON.stringify(isDarkMode));
   }, [isDarkMode]);
+
+  useEffect(() => {
+    localStorage.setItem('loo-language', activeLanguage);
+  }, [activeLanguage]);
 
   const toggleSave = (id: string) => {
     setSavedIds(prev => 
@@ -87,15 +99,15 @@ export default function Home() {
           <div className="max-w-6xl mx-auto pb-24">
             <div className="flex justify-between items-end mb-10">
               <div>
-                <h1 className="text-4xl font-black text-white mb-2">Available Restrooms</h1>
-                <p className="text-[var(--text-secondary)] font-medium">{filteredBathrooms.length} premium locations found near you in Paris</p>
+                <h1 className="text-4xl font-black text-white mb-2">{t.bathrooms.available}</h1>
+                <p className="text-[var(--text-secondary)] font-medium">{filteredBathrooms.length} {t.bathrooms.locations_found} near you in Paris</p>
               </div>
               <div className="flex items-center space-x-3">
                 <button className="px-5 py-2.5 bg-[var(--surface)] text-[var(--foreground)] text-xs font-bold rounded-xl border border-[var(--border)] hover:bg-[var(--surface-hover)] transition-all">
-                  Sort by Distance
+                  {t.bathrooms.sort_distance}
                 </button>
                 <button className="px-5 py-2.5 bg-[var(--surface)] text-[var(--foreground)] text-xs font-bold rounded-xl border border-[var(--border)] hover:bg-[var(--surface-hover)] transition-all">
-                  Sort by Rating
+                  {t.bathrooms.sort_rating}
                 </button>
               </div>
             </div>
@@ -201,6 +213,8 @@ export default function Home() {
               onUpdateProfile={setUserProfile}
               isDarkMode={isDarkMode}
               onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
+              activeLanguage={activeLanguage}
+              onLanguageChange={setActiveLanguage}
             />
             <MapDashboard currentView={viewMode} onViewChange={setViewMode} />
           </div>

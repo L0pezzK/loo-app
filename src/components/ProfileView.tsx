@@ -20,6 +20,8 @@ import {
 } from 'lucide-react';
 import EditProfileModal from './EditProfileModal';
 
+import { translations, Language } from '@/data/translations';
+
 interface ProfileViewProps {
   savedCount: number;
   reviewCount: number;
@@ -27,10 +29,29 @@ interface ProfileViewProps {
   onUpdateProfile: (profile: any) => void;
   isDarkMode: boolean;
   onToggleDarkMode: () => void;
+  activeLanguage: Language;
+  onLanguageChange: (lang: Language) => void;
 }
 
-export default function ProfileView({ savedCount, reviewCount, profile, onUpdateProfile, isDarkMode, onToggleDarkMode }: ProfileViewProps) {
+export default function ProfileView({ 
+  savedCount, 
+  reviewCount, 
+  profile, 
+  onUpdateProfile, 
+  isDarkMode, 
+  onToggleDarkMode,
+  activeLanguage,
+  onLanguageChange
+}: ProfileViewProps) {
+  const t = translations[activeLanguage];
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
+
+  const languages: { id: Language; label: string; flag: string }[] = [
+    { id: 'en', label: 'English (US)', flag: '🇺🇸' },
+    { id: 'fr', label: 'Français (FR)', flag: '🇫🇷' },
+    { id: 'es', label: 'Español (ES)', flag: '🇪🇸' },
+  ];
 
   return (
     <div className="flex-1 bg-[var(--background)] flex overflow-hidden lg:h-full animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -48,8 +69,8 @@ export default function ProfileView({ savedCount, reviewCount, profile, onUpdate
       {/* Sidebar */}
       <aside className="w-80 border-r border-white/5 bg-black/20 flex flex-col p-8 shrink-0">
         <div className="mb-12">
-          <h2 className="text-3xl font-black text-white tracking-tight mb-2">Settings</h2>
-          <p className="text-[var(--text-secondary)] text-xs font-bold uppercase tracking-widest">Manage your preferences</p>
+          <h2 className="text-3xl font-black text-white tracking-tight mb-2">{t.profile.settings}</h2>
+          <p className="text-[var(--text-secondary)] text-xs font-bold uppercase tracking-widest">{t.profile.manage_prefs}</p>
         </div>
 
         <nav className="flex-1 space-y-2">
@@ -107,10 +128,10 @@ export default function ProfileView({ savedCount, reviewCount, profile, onUpdate
                     onClick={() => setIsEditModalOpen(true)}
                     className="bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/20 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-[var(--accent)] hover:text-[var(--surface)] transition-all"
                   >
-                    Edit Profile
+                    {t.profile.edit_profile}
                   </button>
                   <button className="bg-white/5 text-white/40 border border-white/10 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest hover:text-white hover:bg-white/10 transition-all">
-                    Share Stats
+                    {t.profile.share_stats}
                   </button>
                 </div>
               </div>
@@ -135,7 +156,7 @@ export default function ProfileView({ savedCount, reviewCount, profile, onUpdate
             <div className="bg-[var(--surface)]/40 border border-white/5 rounded-[40px] p-8 space-y-8">
               <div className="flex items-center space-x-4 mb-2">
                 <User className="w-5 h-5 text-[var(--accent)]" />
-                <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white">Account Information</h4>
+                <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white">{t.profile.account_info}</h4>
               </div>
               <div className="space-y-6">
                 <div className="flex flex-col space-y-2">
@@ -163,7 +184,7 @@ export default function ProfileView({ savedCount, reviewCount, profile, onUpdate
             <div className="bg-[var(--surface)]/40 border border-white/5 rounded-[40px] p-8 space-y-8">
               <div className="flex items-center space-x-4 mb-2">
                 <Accessibility className="w-5 h-5 text-[var(--accent)]" />
-                <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white">Accessibility</h4>
+                <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white">{t.profile.accessibility}</h4>
               </div>
               <p className="text-[var(--text-secondary)] text-sm font-medium leading-relaxed">
                 Customize your search experience to highlight specific facility needs.
@@ -194,23 +215,48 @@ export default function ProfileView({ savedCount, reviewCount, profile, onUpdate
             <div className="bg-[var(--surface)]/40 border border-white/5 rounded-[40px] p-8 space-y-8">
               <div className="flex items-center space-x-4 mb-2">
                 <Monitor className="w-5 h-5 text-[var(--accent)]" />
-                <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white">App Settings</h4>
+                <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white">{t.profile.app_settings}</h4>
               </div>
               <div className="space-y-6">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between relative">
                   <div className="flex items-center space-x-3">
                     <Globe className="w-4 h-4 text-white/40" />
-                    <span className="text-sm font-bold text-white/80">Language</span>
+                    <span className="text-sm font-bold text-white/80">{t.profile.language}</span>
                   </div>
-                  <div className="flex items-center space-x-2 text-[var(--text-secondary)] hover:text-white cursor-pointer px-3 py-1 bg-white/5 rounded-lg border border-white/5">
-                    <span className="text-xs font-black uppercase tracking-widest">English (US)</span>
-                    <ChevronRight className="w-4 h-4 rotate-90" />
+                  <div className="relative">
+                    <button 
+                      onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+                      className="flex items-center space-x-3 text-[var(--text-secondary)] hover:text-white cursor-pointer px-4 py-2 bg-white/5 rounded-xl border border-white/5 transition-all hover:border-[var(--accent)]/30 group"
+                    >
+                      <span className="text-[10px] font-black uppercase tracking-widest leading-none">
+                        {languages.find(l => l.id === activeLanguage)?.label}
+                      </span>
+                      <ChevronRight className={`w-4 h-4 transition-transform duration-300 ${isLangMenuOpen ? 'rotate-90' : ''}`} />
+                    </button>
+
+                    {isLangMenuOpen && (
+                      <div className="absolute right-0 top-full mt-2 w-48 bg-[var(--surface)] border border-white/10 rounded-2xl shadow-2xl z-[100] overflow-hidden animate-in zoom-in-95 fade-in duration-200">
+                        {languages.map((lang) => (
+                          <button
+                            key={lang.id}
+                            onClick={() => {
+                              onLanguageChange(lang.id);
+                              setIsLangMenuOpen(false);
+                            }}
+                            className={`w-full flex items-center justify-between px-5 py-4 text-left hover:bg-white/5 transition-colors ${activeLanguage === lang.id ? 'text-[var(--accent)] font-bold' : 'text-white/60'}`}
+                          >
+                            <span className="text-xs">{lang.label}</span>
+                            <span className="text-sm">{lang.flag}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <Moon className={`w-4 h-4 ${isDarkMode ? 'text-[var(--accent)]' : 'text-slate-400'}`} />
-                    <span className="text-sm font-bold text-white/80">Dark Mode</span>
+                    <span className="text-sm font-bold text-white/80">{t.profile.dark_mode}</span>
                   </div>
                   <button 
                     onClick={onToggleDarkMode}
@@ -222,7 +268,7 @@ export default function ProfileView({ savedCount, reviewCount, profile, onUpdate
                 <div className="flex items-center justify-between pt-4 border-t border-white/5">
                   <div className="flex items-center space-x-3">
                     <MapIcon className="w-4 h-4 text-white/40" />
-                    <span className="text-sm font-bold text-white/80">Offline Maps</span>
+                    <span className="text-sm font-bold text-white/80">{t.profile.offline_maps}</span>
                   </div>
                   <span className="text-xs font-black text-[var(--accent)] uppercase tracking-widest">240MB</span>
                 </div>
