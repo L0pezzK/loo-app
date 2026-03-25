@@ -30,15 +30,40 @@
 
 .light {
   --background: #E2E8F0;
-  --foreground: #0F172A;
-  --surface: #FFFFFF;
-  --surface-hover: #F8FAFC;
-  --accent: #0091EA;
-  --accent-hover: #01579B;
-  --text-secondary: #475569;
+  --foreground: #020617;
+  --surface: #F8FAFC;
+  --surface-hover: #F1F5F9;
+  --accent: #0284C7;
+  --accent-hover: #0369A1;
+  --text-secondary: #334155;
   --border: #CBD5E1;
   --success: #059669;
   --error: #DC2626;
+}
+
+/* Theme-specific Overrides */
+.light .text-white {
+  color: var(--foreground) !important;
+}
+
+.light .text-white\/80,
+.light .text-white\/60,
+.light .text-white\/40,
+.light .text-white\/30,
+.light .text-white\/20,
+.light .text-white\/10 {
+  color: var(--text-secondary) !important;
+  opacity: 1 !important;
+}
+
+.light .border-white\/10,
+.light .border-white\/5 {
+  border-color: var(--border) !important;
+}
+
+.light .bg-black\/40,
+.light .bg-black\/20 {
+  background-color: rgba(255, 255, 255, 0.4) !important;
 }
 
 body {
