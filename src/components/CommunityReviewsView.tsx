@@ -1,12 +1,17 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Star, MessageSquare, TrendingUp, Users, Award, ChevronRight, SlidersHorizontal } from 'lucide-react';
 import ReviewFeedCard from './ReviewFeedCard';
 import TopRatedSidebarCard from './TopRatedSidebarCard';
 import ContributorRow from './ContributorRow';
+import AddReviewModal from './AddReviewModal';
 
 export default function CommunityReviewsView() {
-  const reviews = [
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [reviews, setReviews] = useState<any[]>([]);
+
+  const defaultReviews = [
     {
       author: "Amélie Durand",
       avatar: "https://i.pravatar.cc/150?u=amelie",
@@ -42,8 +47,35 @@ export default function CommunityReviewsView() {
     }
   ];
 
+  // Initialize reviews from local storage + defaults
+  useEffect(() => {
+    const saved = localStorage.getItem('loo-user-reviews');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      setReviews([...parsed, ...defaultReviews]);
+    } else {
+      setReviews(defaultReviews);
+    }
+  }, []);
+
+  const handleAddReview = (newReview: any) => {
+    const saved = localStorage.getItem('loo-user-reviews');
+    const userReviews = saved ? JSON.parse(saved) : [];
+    const updatedUserReviews = [newReview, ...userReviews];
+    
+    localStorage.setItem('loo-user-reviews', JSON.stringify(updatedUserReviews));
+    setReviews([newReview, ...reviews]);
+  };
+
   return (
     <div className="flex-1 bg-[var(--background)] flex flex-col overflow-y-auto custom-scrollbar animate-in fade-in zoom-in duration-500">
+      
+      <AddReviewModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onSubmit={handleAddReview} 
+      />
+
       <div className="max-w-7xl mx-auto w-full px-8 lg:px-12 py-12">
         
         {/* Community Highlights Dashboard */}
@@ -57,7 +89,10 @@ export default function CommunityReviewsView() {
                 Real-time reports from fellow Parisians. Join the quest for the perfect public rest stop.
               </p>
             </div>
-            <button className="px-12 py-5 bg-[var(--accent)]/10 text-[var(--accent)] rounded-2xl font-black shadow-2xl hover:bg-[var(--accent)] hover:text-[var(--surface)] transition-all flex items-center space-x-3 border border-[var(--accent)]/20">
+            <button 
+              onClick={() => setIsModalOpen(true)}
+              className="px-12 py-5 bg-[var(--accent)]/10 text-[var(--accent)] rounded-2xl font-black shadow-2xl hover:bg-[var(--accent)] hover:text-[var(--surface)] transition-all flex items-center space-x-3 border border-[var(--accent)]/20"
+            >
               <MessageSquare className="w-5 h-5" />
               <span>Share Your Experience</span>
             </button>
