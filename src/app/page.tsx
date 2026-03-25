@@ -26,6 +26,7 @@ export default function Home() {
   const [selectedBathroom, setSelectedBathroom] = useState<Bathroom | null>(null);
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const [userProfile, setUserProfile] = useState({
     name: 'Marc-Antoine',
     bio: 'Loo connoisseur since 2022. On a mission to map every accessible facility in the city.',
@@ -39,6 +40,9 @@ export default function Home() {
 
     const savedProfile = localStorage.getItem('loo-user-profile');
     if (savedProfile) setUserProfile(JSON.parse(savedProfile));
+
+    const savedTheme = localStorage.getItem('loo-dark-mode');
+    if (savedTheme !== null) setIsDarkMode(JSON.parse(savedTheme));
   }, []);
 
   // Sync state to local storage
@@ -49,6 +53,10 @@ export default function Home() {
   useEffect(() => {
     localStorage.setItem('loo-user-profile', JSON.stringify(userProfile));
   }, [userProfile]);
+
+  useEffect(() => {
+    localStorage.setItem('loo-dark-mode', JSON.stringify(isDarkMode));
+  }, [isDarkMode]);
 
   const toggleSave = (id: string) => {
     setSavedIds(prev => 
@@ -67,7 +75,7 @@ export default function Home() {
   );
 
   return (
-    <div className="flex flex-col flex-1 h-full bg-[var(--background)] overflow-hidden">
+    <div className={`flex flex-col flex-1 h-full bg-[var(--background)] overflow-hidden transition-colors duration-500 ${isDarkMode ? '' : 'light text-foreground'}`}>
       <Navbar currentView={viewMode} onViewChange={setViewMode} />
       
       <div className="flex flex-1 overflow-hidden relative">
@@ -191,6 +199,8 @@ export default function Home() {
               reviewCount={142} 
               profile={userProfile}
               onUpdateProfile={setUserProfile}
+              isDarkMode={isDarkMode}
+              onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
             />
             <MapDashboard currentView={viewMode} onViewChange={setViewMode} />
           </div>

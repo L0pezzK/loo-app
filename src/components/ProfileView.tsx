@@ -25,9 +25,11 @@ interface ProfileViewProps {
   reviewCount: number;
   profile: { name: string; bio: string; avatar: string };
   onUpdateProfile: (profile: any) => void;
+  isDarkMode: boolean;
+  onToggleDarkMode: () => void;
 }
 
-export default function ProfileView({ savedCount, reviewCount, profile, onUpdateProfile }: ProfileViewProps) {
+export default function ProfileView({ savedCount, reviewCount, profile, onUpdateProfile, isDarkMode, onToggleDarkMode }: ProfileViewProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   return (
@@ -207,12 +209,15 @@ export default function ProfileView({ savedCount, reviewCount, profile, onUpdate
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <Moon className="w-4 h-4 text-[var(--accent)]" />
+                    <Moon className={`w-4 h-4 ${isDarkMode ? 'text-[var(--accent)]' : 'text-slate-400'}`} />
                     <span className="text-sm font-bold text-white/80">Dark Mode</span>
                   </div>
-                  <div className="w-12 h-6 bg-[var(--accent)] rounded-full relative p-1 cursor-pointer">
-                    <div className="absolute right-1 top-1 w-4 h-4 bg-[var(--surface)] rounded-full shadow-lg"></div>
-                  </div>
+                  <button 
+                    onClick={onToggleDarkMode}
+                    className={`w-12 h-6 rounded-full relative p-1 cursor-pointer transition-colors duration-300 ${isDarkMode ? 'bg-[var(--accent)]' : 'bg-slate-200'}`}
+                  >
+                    <div className={`w-4 h-4 bg-white rounded-full shadow-lg transition-transform duration-300 transform ${isDarkMode ? 'translate-x-6' : 'translate-x-0'}`}></div>
+                  </button>
                 </div>
                 <div className="flex items-center justify-between pt-4 border-t border-white/5">
                   <div className="flex items-center space-x-3">

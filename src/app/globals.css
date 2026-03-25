@@ -28,7 +28,21 @@
   --error: #FF5252;
 }
 
+.light {
+  --background: #E2E8F0;
+  --foreground: #0F172A;
+  --surface: #FFFFFF;
+  --surface-hover: #F8FAFC;
+  --accent: #0091EA;
+  --accent-hover: #01579B;
+  --text-secondary: #475569;
+  --border: #CBD5E1;
+  --success: #059669;
+  --error: #DC2626;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
