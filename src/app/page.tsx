@@ -1,12 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Filter, Map as MapIcon, List as ListIcon, ChevronDown, MapPin } from 'lucide-react';
+import { Search, Filter, Map as MapIcon, List as ListIcon, ChevronDown, MapPin, Bookmark, User } from 'lucide-react';
 import { mockBathrooms, Bathroom } from '@/data/bathrooms';
 import BathroomCard from '@/components/BathroomCard';
 import InteractiveMap from '@/components/Map';
 import FilterSidebar from '@/components/FilterSidebar';
 import MapDetailCard from '@/components/MapDetailCard';
+import MapDashboard from '@/components/MapDashboard';
 import dynamic from 'next/dynamic';
 
 const DynamicMap = dynamic(() => import('@/components/Map'), {
@@ -15,7 +16,7 @@ const DynamicMap = dynamic(() => import('@/components/Map'), {
 });
 
 export default function Home() {
-  const [viewMode, setViewMode] = useState<'list' | 'map'>('map');
+  const [viewMode, setViewMode] = useState<'map' | 'list' | 'saved' | 'profile'>('map');
   const [selectedBathroom, setSelectedBathroom] = useState<Bathroom | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -71,48 +72,40 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Floating Toggle Selector */}
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100]">
-          <div className="flex items-center bg-[var(--surface)]/80 backdrop-blur-2xl p-2 rounded-2xl border border-white/10 shadow-2xl">
-            <button 
-              onClick={() => setViewMode('list')}
-              className={`flex items-center space-x-2 px-6 py-2.5 rounded-xl transition-all ${viewMode === 'list' ? 'bg-[var(--accent)]/10 text-[var(--accent)] font-black' : 'text-[var(--text-secondary)] hover:text-white'}`}
-            >
-              <ListIcon className="w-4 h-4" />
-              <span className="text-xs">List View</span>
-            </button>
-            <button 
-              onClick={() => setViewMode('map')}
-              className={`flex items-center space-x-2 px-6 py-2.5 rounded-xl transition-all ${viewMode === 'map' ? 'bg-[var(--accent)]/10 text-[var(--accent)] font-black' : 'text-[var(--text-secondary)] hover:text-white'}`}
-            >
-              <MapIcon className="w-4 h-4" />
-              <span className="text-xs">Map View</span>
-            </button>
-          </div>
-        </div>
+        <MapDashboard currentView={viewMode} onViewChange={setViewMode} />
       </main>
+
+      {/* Overlays for Saved and Profile */}
+      {viewMode === 'saved' && (
+        <div className="fixed inset-0 bg-[var(--background)]/90 backdrop-blur-3xl z-[400] flex flex-col items-center justify-center p-12 text-center overflow-hidden">
+          <MapDashboard currentView={viewMode} onViewChange={setViewMode} />
+          <div className="w-20 h-20 bg-[var(--surface)] rounded-3xl flex items-center justify-center mb-8 border border-white/10">
+            <Bookmark className="w-10 h-10 text-[var(--accent)]" />
+          </div>
+          <h2 className="text-4xl font-black text-white mb-4">Saved Locations</h2>
+          <p className="text-[var(--text-secondary)] text-lg max-w-md">You haven't saved any restrooms yet. Start exploring the map to find your favorites!</p>
+        </div>
+      )}
+
+      {viewMode === 'profile' && (
+        <div className="fixed inset-0 bg-[var(--background)]/90 backdrop-blur-3xl z-[400] flex flex-col items-center justify-center p-12 text-center overflow-hidden">
+          <MapDashboard currentView={viewMode} onViewChange={setViewMode} />
+          <div className="w-24 h-24 bg-gradient-to-br from-[var(--accent)] to-blue-600 rounded-full flex items-center justify-center mb-8 shadow-2xl">
+            <User className="w-12 h-12 text-[var(--surface)]" />
+          </div>
+          <h2 className="text-4xl font-black text-white mb-2">Guest User</h2>
+          <p className="text-[var(--accent)] font-bold mb-8 uppercase tracking-widest text-sm">Premium Member</p>
+          <button className="px-10 py-4 bg-[var(--surface)] border border-white/10 rounded-2xl text-white font-bold hover:bg-[var(--surface-hover)] transition-all">
+            Edit Profile Settings
+          </button>
+        </div>
+      )}
 
       {/* Fullscreen Map Overlay when in map mode */}
       {viewMode === 'map' && (
         <div className="fixed inset-0 z-[200] flex flex-col">
-          <div className="absolute top-8 left-1/2 -translate-x-1/2 z-[300]">
-             <div className="flex items-center bg-[var(--surface)]/80 backdrop-blur-2xl p-2 rounded-2xl border border-white/10 shadow-2xl">
-              <button 
-                onClick={() => setViewMode('list')}
-                className="flex items-center space-x-2 px-6 py-2.5 rounded-xl transition-all text-[var(--text-secondary)] hover:text-white"
-              >
-                <ListIcon className="w-4 h-4" />
-                <span className="text-xs">List View</span>
-              </button>
-              <button 
-                onClick={() => setViewMode('map')}
-                className="flex items-center space-x-2 px-6 py-2.5 rounded-xl transition-all bg-[var(--accent)]/10 text-[var(--accent)] font-black"
-              >
-                <MapIcon className="w-4 h-4" />
-                <span className="text-xs">Map View</span>
-              </button>
-            </div>
-          </div>
+          <MapDashboard currentView={viewMode} onViewChange={setViewMode} />
+          
           <DynamicMap 
             onBathroomSelect={setSelectedBathroom} 
             activeBathroomId={selectedBathroom?.id} 
