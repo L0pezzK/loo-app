@@ -153,13 +153,13 @@ export default function Home() {
 
         {/* Saved Locations Overlay */}
         {viewMode === 'saved' && (
-          <div className="absolute inset-0 bg-[var(--background)]/90 backdrop-blur-3xl z-[200] flex flex-col items-center justify-center p-12 text-center overflow-hidden">
+          <div className="absolute inset-0 z-[200] bg-[var(--background)] flex flex-col">
+            <SavedView 
+              savedIds={savedIds} 
+              onRemove={toggleSave} 
+              onSelect={handleBathroomSelect} 
+            />
             <MapDashboard currentView={viewMode} onViewChange={setViewMode} />
-            <div className="w-20 h-20 bg-[var(--surface)] rounded-3xl flex items-center justify-center mb-8 border border-white/10">
-              <Bookmark className="w-10 h-10 text-[var(--accent)]" />
-            </div>
-            <h2 className="text-4xl font-black text-white mb-4">Saved Locations</h2>
-            <p className="text-[var(--text-secondary)] text-lg max-w-md">You haven't saved any restrooms yet. Start exploring the map to find your favorites!</p>
           </div>
         )}
 
