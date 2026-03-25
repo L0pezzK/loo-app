@@ -10,6 +10,7 @@ import MapDetailCard from '@/components/MapDetailCard';
 import MapDirectionsCard from '@/components/MapDirectionsCard';
 import MapDashboard from '@/components/MapDashboard';
 import Navbar from '@/components/Navbar';
+import BathroomDetailView from '@/components/BathroomDetailView';
 import dynamic from 'next/dynamic';
 
 const DynamicMap = dynamic(() => import('@/components/Map'), {
@@ -18,9 +19,14 @@ const DynamicMap = dynamic(() => import('@/components/Map'), {
 });
 
 export default function Home() {
-  const [viewMode, setViewMode] = useState<'map' | 'list' | 'saved' | 'profile'>('map');
+  const [viewMode, setViewMode] = useState<'map' | 'list' | 'saved' | 'profile' | 'detail'>('map');
   const [selectedBathroom, setSelectedBathroom] = useState<Bathroom | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const handleBathroomSelect = (bathroom: Bathroom) => {
+    setSelectedBathroom(bathroom);
+    setViewMode('detail');
+  };
 
   const filteredBathrooms = mockBathrooms.filter(bathroom => 
     bathroom.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -55,7 +61,11 @@ export default function Home() {
 
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
               {filteredBathrooms.map((bathroom) => (
-                <BathroomCard key={bathroom.id} bathroom={bathroom} />
+                <BathroomCard 
+                  key={bathroom.id} 
+                  bathroom={bathroom} 
+                  onSelect={handleBathroomSelect}
+                />
               ))}
 
               {/* Map Recommendation Card */}
@@ -79,68 +89,72 @@ export default function Home() {
 
           <MapDashboard currentView={viewMode} onViewChange={setViewMode} />
         </main>
-      </div>
 
-      {/* Overlays for Saved and Profile */}
-      {viewMode === 'saved' && (
-        <div className="fixed inset-0 bg-[var(--background)]/90 backdrop-blur-3xl z-[400] flex flex-col items-center justify-center p-12 text-center overflow-hidden">
-          <div className="absolute top-0 left-0 right-0">
-            <Navbar currentView={viewMode} onViewChange={setViewMode} />
-          </div>
-          <MapDashboard currentView={viewMode} onViewChange={setViewMode} />
-          <div className="w-20 h-20 bg-[var(--surface)] rounded-3xl flex items-center justify-center mb-8 border border-white/10">
-            <Bookmark className="w-10 h-10 text-[var(--accent)]" />
-          </div>
-          <h2 className="text-4xl font-black text-white mb-4">Saved Locations</h2>
-          <p className="text-[var(--text-secondary)] text-lg max-w-md">You haven't saved any restrooms yet. Start exploring the map to find your favorites!</p>
-        </div>
-      )}
+        {/* Map View Overlay */}
+        {viewMode === 'map' && (
+          <div className="absolute inset-0 z-[100] flex flex-col bg-[var(--background)]">
+             <div className="flex-1 relative">
+              <DynamicMap 
+                onBathroomSelect={setSelectedBathroom} 
+                activeBathroomId={selectedBathroom?.id} 
+              />
 
-      {viewMode === 'profile' && (
-        <div className="fixed inset-0 bg-[var(--background)]/90 backdrop-blur-3xl z-[400] flex flex-col items-center justify-center p-12 text-center overflow-hidden">
-          <div className="absolute top-0 left-0 right-0">
-            <Navbar currentView={viewMode} onViewChange={setViewMode} />
+              {/* Right Cards Overlay */}
+              {selectedBathroom && (
+                <div className="absolute top-1/2 -translate-y-1/2 right-12 z-[1000] flex flex-col space-y-4">
+                  <MapDetailCard 
+                    bathroom={selectedBathroom} 
+                    onClose={() => setSelectedBathroom(null)} 
+                  />
+                  <MapDirectionsCard 
+                    bathroom={selectedBathroom} 
+                    onClose={() => setSelectedBathroom(null)} 
+                  />
+                </div>
+              )}
+            </div>
+            <MapDashboard currentView={viewMode} onViewChange={setViewMode} />
           </div>
-          <MapDashboard currentView={viewMode} onViewChange={setViewMode} />
-          <div className="w-24 h-24 bg-gradient-to-br from-[var(--accent)] to-blue-600 rounded-full flex items-center justify-center mb-8 shadow-2xl">
-            <User className="w-12 h-12 text-[var(--surface)]" />
-          </div>
-          <h2 className="text-4xl font-black text-white mb-2">Guest User</h2>
-          <p className="text-[var(--accent)] font-bold mb-8 uppercase tracking-widest text-sm">Premium Member</p>
-          <button className="px-10 py-4 bg-[var(--surface)] border border-white/10 rounded-2xl text-white font-bold hover:bg-[var(--surface-hover)] transition-all">
-            Edit Profile Settings
-          </button>
-        </div>
-      )}
+        )}
 
-      {/* Fullscreen Map Overlay when in map mode */}
-      {viewMode === 'map' && (
-        <div className="fixed inset-0 z-[200] flex flex-col">
-          <Navbar currentView={viewMode} onViewChange={setViewMode} />
-          <MapDashboard currentView={viewMode} onViewChange={setViewMode} />
-          
-          <div className="flex-1 relative">
-            <DynamicMap 
-              onBathroomSelect={setSelectedBathroom} 
-              activeBathroomId={selectedBathroom?.id} 
+        {/* Detail View Overlay */}
+        {viewMode === 'detail' && selectedBathroom && (
+          <div className="absolute inset-0 z-[300] bg-[var(--background)] flex flex-col">
+            <BathroomDetailView 
+              bathroom={selectedBathroom} 
+              onBack={() => setViewMode('list')} 
             />
-
-            {/* Right Cards Overlay */}
-            {selectedBathroom && (
-              <div className="absolute top-1/2 -translate-y-1/2 right-12 z-[1000] flex flex-col space-y-4">
-                <MapDetailCard 
-                  bathroom={selectedBathroom} 
-                  onClose={() => setSelectedBathroom(null)} 
-                />
-                <MapDirectionsCard 
-                  bathroom={selectedBathroom} 
-                  onClose={() => setSelectedBathroom(null)} 
-                />
-              </div>
-            )}
+             <MapDashboard currentView={viewMode} onViewChange={setViewMode} />
           </div>
-        </div>
-      )}
+        )}
+
+        {/* Saved Locations Overlay */}
+        {viewMode === 'saved' && (
+          <div className="absolute inset-0 bg-[var(--background)]/90 backdrop-blur-3xl z-[200] flex flex-col items-center justify-center p-12 text-center overflow-hidden">
+            <MapDashboard currentView={viewMode} onViewChange={setViewMode} />
+            <div className="w-20 h-20 bg-[var(--surface)] rounded-3xl flex items-center justify-center mb-8 border border-white/10">
+              <Bookmark className="w-10 h-10 text-[var(--accent)]" />
+            </div>
+            <h2 className="text-4xl font-black text-white mb-4">Saved Locations</h2>
+            <p className="text-[var(--text-secondary)] text-lg max-w-md">You haven't saved any restrooms yet. Start exploring the map to find your favorites!</p>
+          </div>
+        )}
+
+        {/* Profile Overlay */}
+        {viewMode === 'profile' && (
+          <div className="absolute inset-0 bg-[var(--background)]/90 backdrop-blur-3xl z-[200] flex flex-col items-center justify-center p-12 text-center overflow-hidden">
+            <MapDashboard currentView={viewMode} onViewChange={setViewMode} />
+            <div className="w-24 h-24 bg-gradient-to-br from-[var(--accent)] to-blue-600 rounded-full flex items-center justify-center mb-8 shadow-2xl">
+              <User className="w-12 h-12 text-[var(--surface)]" />
+            </div>
+            <h2 className="text-4xl font-black text-white mb-2">Guest User</h2>
+            <p className="text-[var(--accent)] font-bold mb-8 uppercase tracking-widest text-sm">Premium Member</p>
+            <button className="px-10 py-4 bg-[var(--surface)] border border-white/10 rounded-2xl text-white font-bold hover:bg-[var(--surface-hover)] transition-all">
+              Edit Profile Settings
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

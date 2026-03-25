@@ -4,15 +4,19 @@ import Link from 'next/link';
 
 interface BathroomCardProps {
   bathroom: Bathroom;
+  onSelect?: (bathroom: Bathroom) => void;
 }
 
-export default function BathroomCard({ bathroom }: BathroomCardProps) {
+export default function BathroomCard({ bathroom, onSelect }: BathroomCardProps) {
   // Extract arrondissement from address (e.g., "75008 Paris" -> "8")
   const arrondissementMatch = bathroom.address.match(/750(\d{2})/);
   const arrondissement = arrondissementMatch ? `${parseInt(arrondissementMatch[1])}e Arrondissement` : 'Paris';
 
   return (
-    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-3xl overflow-hidden hover:border-[var(--accent)] hover:shadow-[0_0_30px_rgba(0,229,255,0.1)] transition-all group flex flex-col h-full">
+    <div 
+      onClick={() => onSelect?.(bathroom)}
+      className="bg-[var(--surface)] border border-[var(--border)] rounded-3xl overflow-hidden hover:border-[var(--accent)] hover:shadow-[0_0_30px_rgba(0,229,255,0.1)] transition-all group flex flex-col h-full cursor-pointer"
+    >
       {/* Image Section */}
       <div className="h-48 w-full relative overflow-hidden">
         <img 

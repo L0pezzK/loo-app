@@ -3,8 +3,8 @@
 import { Map as MapIcon, LayoutGrid, Bookmark, User } from 'lucide-react';
 
 interface MapDashboardProps {
-  currentView: 'map' | 'list' | 'saved' | 'profile';
-  onViewChange: (view: 'map' | 'list' | 'saved' | 'profile') => void;
+  currentView: 'map' | 'list' | 'saved' | 'profile' | 'detail';
+  onViewChange: (view: 'map' | 'list' | 'saved' | 'profile' | 'detail') => void;
 }
 
 export default function MapDashboard({ currentView, onViewChange }: MapDashboardProps) {

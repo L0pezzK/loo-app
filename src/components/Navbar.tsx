@@ -4,7 +4,7 @@ import { Search, Bell } from 'lucide-react';
 
 interface NavbarProps {
   currentView?: string;
-  onViewChange?: (view: 'map' | 'list' | 'saved' | 'profile') => void;
+  onViewChange?: (view: 'map' | 'list' | 'saved' | 'profile' | 'detail') => void;
 }
 
 export default function Navbar({ currentView = 'list', onViewChange }: NavbarProps) {

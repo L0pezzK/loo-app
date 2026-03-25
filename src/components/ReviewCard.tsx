@@ -1,3 +1,5 @@
+'use client';
+
 import { Review } from '@/data/bathrooms';
 import { Star } from 'lucide-react';
 
@@ -7,28 +9,30 @@ interface ReviewCardProps {
 
 export default function ReviewCard({ review }: ReviewCardProps) {
   return (
-    <div className="bg-[var(--surface-hover)] p-5 rounded-2xl border border-[var(--border)]">
-      <div className="flex justify-between items-start mb-3">
+    <div className="bg-white/5 border border-white/5 rounded-2xl p-6 hover:bg-white/10 transition-all">
+      <div className="flex justify-between items-start mb-4">
         <div className="flex items-center space-x-3">
-          {review.avatar ? (
-            <img src={review.avatar} alt={review.author} className="w-10 h-10 rounded-full object-cover" />
-          ) : (
-            <div className="w-10 h-10 rounded-full bg-[var(--accent)] text-[var(--surface)] flex items-center justify-center font-bold text-lg">
-              {review.author.charAt(0)}
-            </div>
-          )}
+          <img 
+            src={review.avatar || `https://i.pravatar.cc/150?u=${review.author}`} 
+            alt={review.author} 
+            className="w-10 h-10 rounded-full object-cover border border-white/10"
+          />
           <div>
-            <h4 className="font-bold text-white">{review.author}</h4>
-            <span className="text-xs text-[var(--text-secondary)]">{review.date}</span>
+            <h4 className="text-white font-bold text-sm tracking-tight">{review.author}</h4>
+            <p className="text-[var(--text-secondary)] text-[10px] font-medium">{review.date}</p>
           </div>
         </div>
-        <div className="flex items-center px-2 py-1 bg-[var(--surface)] rounded-lg text-sm">
-          <span className="font-bold text-white mr-1">{review.rating}</span>
-          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+        <div className="flex items-center space-x-0.5">
+          {[...Array(5)].map((_, i) => (
+            <Star 
+              key={i} 
+              className={`w-3 h-3 ${i < review.rating ? 'text-white fill-current' : 'text-white/20'}`} 
+            />
+          ))}
         </div>
       </div>
-      <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
-        "{review.text}"
+      <p className="text-white/80 text-xs leading-relaxed font-medium">
+        {review.text}
       </p>
     </div>
   );
