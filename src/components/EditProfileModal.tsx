@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { X, User, Type, Save, CheckCircle2, Image as ImageIcon } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { X, User, Type, Save, CheckCircle2, Image as ImageIcon, Camera, Upload, RotateCcw } from 'lucide-react';
 
 interface EditProfileModalProps {
   isOpen: boolean;
@@ -14,6 +14,10 @@ export default function EditProfileModal({ isOpen, onClose, onSave, initialProfi
   const [profile, setProfile] = useState(initialProfile);
   const [isSaving, setIsSaving] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const avatars = [
     "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=400",
@@ -24,6 +28,52 @@ export default function EditProfileModal({ isOpen, onClose, onSave, initialProfi
   ];
 
   if (!isOpen && !isSuccess) return null;
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfile({ ...profile, avatar: reader.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const startCamera = async () => {
+    setIsCameraOpen(true);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (err) {
+      console.error("Camera error:", err);
+      setIsCameraOpen(false);
+    }
+  };
+
+  const capturePhoto = () => {
+    if (videoRef.current && canvasRef.current) {
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx?.drawImage(video, 0, 0);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+      setProfile({ ...profile, avatar: dataUrl });
+      closeCamera();
+    }
+  };
+
+  const closeCamera = () => {
+    if (videoRef.current?.srcObject) {
+      const stream = videoRef.current.srcObject as MediaStream;
+      stream.getTracks().forEach(track => track.stop());
+    }
+    setIsCameraOpen(false);
+  };
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,23 +131,71 @@ export default function EditProfileModal({ isOpen, onClose, onSave, initialProfi
             {/* Body */}
             <div className="p-8 space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
               
-              {/* Avatar Picker */}
-              <div className="space-y-4">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 block">Select Avatar</label>
+              {/* Profile Image Section */}
+              <div className="flex flex-col items-center space-y-6">
+                <div className="relative group">
+                  <div className="w-40 h-40 rounded-3xl border-4 border-white/5 p-1 overflow-hidden shadow-2xl transition-all group-hover:border-[var(--accent)]/30">
+                    <img src={profile.avatar} className="w-full h-full object-cover rounded-2xl" alt="Live Preview" />
+                  </div>
+                  {isCameraOpen ? (
+                     <div className="absolute inset-0 rounded-3xl overflow-hidden bg-black z-20 border-4 border-[var(--accent)]">
+                        <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
+                        <div className="absolute bottom-2 inset-x-2 flex justify-between">
+                          <button type="button" onClick={closeCamera} className="p-2 bg-black/60 rounded-xl text-white hover:bg-black transition-all">
+                            <X className="w-4 h-4" />
+                          </button>
+                          <button type="button" onClick={capturePhoto} className="px-4 py-2 bg-[var(--accent)] text-[var(--surface)] text-[10px] font-black uppercase rounded-xl shadow-lg hover:scale-105 active:scale-95 transition-all">
+                            Shoot
+                          </button>
+                        </div>
+                     </div>
+                  ) : (
+                    <div className="absolute -bottom-2 -right-2 flex flex-col space-y-2">
+                       <input 
+                         type="file" 
+                         ref={fileInputRef} 
+                         onChange={handleFileChange} 
+                         className="hidden" 
+                         accept="image/*" 
+                       />
+                       <button 
+                         type="button"
+                         onClick={() => fileInputRef.current?.click()}
+                         className="w-10 h-10 bg-white shadow-xl rounded-xl flex items-center justify-center text-[var(--surface)] hover:scale-110 active:scale-90 transition-all"
+                       >
+                         <Upload className="w-5 h-5" />
+                       </button>
+                       <button 
+                         type="button"
+                         onClick={startCamera}
+                         className="w-10 h-10 bg-[var(--accent)] shadow-xl rounded-xl flex items-center justify-center text-[var(--surface)] hover:scale-110 active:scale-90 transition-all"
+                       >
+                         <Camera className="w-5 h-5" />
+                       </button>
+                    </div>
+                  )}
+                </div>
+                <canvas ref={canvasRef} className="hidden" />
+              </div>
+
+              {/* Avatar Presets */}
+              <div className="space-y-4 pt-4">
+                <div className="flex items-center justify-between">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 block">Or use a preset</label>
+                  <button type="button" onClick={() => setProfile({...profile, avatar: initialProfile.avatar})} className="flex items-center space-x-2 text-[var(--text-secondary)] hover:text-white transition-colors">
+                    <RotateCcw className="w-3 h-3" />
+                    <span className="text-[8px] font-black uppercase tracking-widest leading-none">Reset</span>
+                  </button>
+                </div>
                 <div className="flex flex-wrap gap-4">
                   {avatars.map((url) => (
                     <button
                       key={url}
                       type="button"
                       onClick={() => setProfile({ ...profile, avatar: url })}
-                      className={`relative w-16 h-16 rounded-2xl overflow-hidden border-4 transition-all hover:scale-110 active:scale-90 ${profile.avatar === url ? 'border-[var(--accent)]' : 'border-transparent opacity-50 hover:opacity-100'}`}
+                      className={`relative w-14 h-14 rounded-xl overflow-hidden border-4 transition-all hover:scale-110 active:scale-90 ${profile.avatar === url ? 'border-[var(--accent)] shadow-[0_0_20px_rgba(0,229,255,0.2)]' : 'border-transparent opacity-50 hover:opacity-100'}`}
                     >
                       <img src={url} className="w-full h-full object-cover" alt="Avatar preset" />
-                      {profile.avatar === url && (
-                        <div className="absolute inset-0 bg-[var(--accent)]/20 flex items-center justify-center">
-                          <CheckCircle2 className="w-6 h-6 text-white" />
-                        </div>
-                      )}
                     </button>
                   ))}
                 </div>
