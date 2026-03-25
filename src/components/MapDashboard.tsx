@@ -1,10 +1,10 @@
 'use client';
 
-import { Map as MapIcon, LayoutGrid, Bookmark, User } from 'lucide-react';
+import { Map as MapIcon, LayoutGrid, Bookmark, MessageSquare } from 'lucide-react';
 
 interface MapDashboardProps {
-  currentView: 'map' | 'list' | 'saved' | 'profile' | 'detail';
-  onViewChange: (view: 'map' | 'list' | 'saved' | 'profile' | 'detail') => void;
+  currentView: 'map' | 'list' | 'saved' | 'profile' | 'detail' | 'reviews';
+  onViewChange: (view: 'map' | 'list' | 'saved' | 'profile' | 'detail' | 'reviews') => void;
 }
 
 export default function MapDashboard({ currentView, onViewChange }: MapDashboardProps) {
@@ -12,7 +12,7 @@ export default function MapDashboard({ currentView, onViewChange }: MapDashboard
     { id: 'map', label: 'Map View', icon: MapIcon },
     { id: 'list', label: 'List View', icon: LayoutGrid },
     { id: 'saved', label: 'Saved', icon: Bookmark },
-    { id: 'profile', label: 'Profile', icon: User },
+    { id: 'reviews', label: 'Reviews', icon: MessageSquare },
   ];
 
   return (

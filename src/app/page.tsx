@@ -12,6 +12,7 @@ import MapDashboard from '@/components/MapDashboard';
 import Navbar from '@/components/Navbar';
 import BathroomDetailView from '@/components/BathroomDetailView';
 import SavedView from '@/components/SavedView';
+import CommunityReviewsView from '@/components/CommunityReviewsView';
 import dynamic from 'next/dynamic';
 
 const DynamicMap = dynamic(() => import('@/components/Map'), {
@@ -20,7 +21,7 @@ const DynamicMap = dynamic(() => import('@/components/Map'), {
 });
 
 export default function Home() {
-  const [viewMode, setViewMode] = useState<'map' | 'list' | 'saved' | 'profile' | 'detail'>('map');
+  const [viewMode, setViewMode] = useState<'map' | 'list' | 'saved' | 'profile' | 'detail' | 'reviews'>('map');
   const [selectedBathroom, setSelectedBathroom] = useState<Bathroom | null>(null);
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -159,6 +160,14 @@ export default function Home() {
               onRemove={toggleSave} 
               onSelect={handleBathroomSelect} 
             />
+            <MapDashboard currentView={viewMode} onViewChange={setViewMode} />
+          </div>
+        )}
+
+        {/* Community Reviews Overlay */}
+        {viewMode === 'reviews' && (
+          <div className="absolute inset-0 z-[200] bg-[var(--background)] flex flex-col">
+            <CommunityReviewsView />
             <MapDashboard currentView={viewMode} onViewChange={setViewMode} />
           </div>
         )}

@@ -4,7 +4,7 @@ import { Search, Bell } from 'lucide-react';
 
 interface NavbarProps {
   currentView?: string;
-  onViewChange?: (view: 'map' | 'list' | 'saved' | 'profile' | 'detail') => void;
+  onViewChange?: (view: 'map' | 'list' | 'saved' | 'profile' | 'detail' | 'reviews') => void;
 }
 
 export default function Navbar({ currentView = 'list', onViewChange }: NavbarProps) {
@@ -12,7 +12,7 @@ export default function Navbar({ currentView = 'list', onViewChange }: NavbarPro
     { label: 'Map', id: 'map' as const },
     { label: 'List', id: 'list' as const },
     { label: 'Saved', id: 'saved' as const },
-    { label: 'Profile', id: 'profile' as const },
+    { label: 'Reviews', id: 'reviews' as const },
   ];
 
   return (
