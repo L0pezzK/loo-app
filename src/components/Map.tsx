@@ -104,7 +104,7 @@ export default function InteractiveMap({ onBathroomSelect, activeBathroomId, zoo
       >
         <TileLayer
           attribution='&copy; CARTO'
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         />
         
         {/* User Marker */}
@@ -114,10 +114,10 @@ export default function InteractiveMap({ onBathroomSelect, activeBathroomId, zoo
         {activeBathroom && (
           <Polyline 
             positions={[userPosition, [activeBathroom.lat, activeBathroom.lng]]} 
-            color="#00E5FF" 
+            color="#6366f1" 
             dashArray="10, 15" 
             weight={4}
-            opacity={0.6}
+            opacity={0.8}
           />
         )}
 
