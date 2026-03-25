@@ -1,37 +1,43 @@
 'use client';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { Search, Bell } from 'lucide-react';
 
-export default function Navbar() {
-  const pathname = usePathname();
+interface NavbarProps {
+  currentView?: string;
+  onViewChange?: (view: 'map' | 'list' | 'saved' | 'profile') => void;
+}
 
+export default function Navbar({ currentView = 'list', onViewChange }: NavbarProps) {
   const navItems = [
-    { label: 'Map', href: '/map' },
-    { label: 'List', href: '/' }, // List is the main view in the design
-    { label: 'Saved', href: '/saved' },
-    { label: 'Profile', href: '/profile' },
+    { label: 'Map', id: 'map' as const },
+    { label: 'List', id: 'list' as const },
+    { label: 'Saved', id: 'saved' as const },
+    { label: 'Profile', id: 'profile' as const },
   ];
 
   return (
-    <nav className="h-16 border-b border-[var(--border)] bg-[var(--background)] flex items-center justify-between px-8 sticky top-0 z-50">
+    <nav className="h-16 border-b border-[var(--border)] bg-[var(--background)] flex items-center justify-between px-8 sticky top-0 z-[500]">
       <div className="flex items-center space-x-12">
-        <Link href="/" className="text-2xl font-black tracking-tighter text-[var(--accent)] flex items-center">
+        <button 
+          onClick={() => onViewChange?.('list')}
+          className="text-2xl font-black tracking-tighter text-[var(--accent)] flex items-center"
+        >
           LOO
-        </Link>
-        <div className="flex items-center space-x-8">
+        </button>
+        <div className="flex items-center space-x-8 h-16">
           {navItems.map((item) => {
-            const isActive = pathname === item.href || (item.label === 'List' && pathname === '/');
+            const isActive = currentView === item.id;
             return (
-              <Link 
-                key={item.href} 
-                href={item.href}
-                className={`text-sm font-bold transition-all ${isActive ? 'text-white border-b-2 border-[var(--accent)]' : 'text-[var(--text-secondary)] hover:text-white'}`}
-                style={{ paddingBottom: isActive ? '20px' : '0', marginBottom: isActive ? '-20px' : '0' }}
+              <button 
+                key={item.id} 
+                onClick={() => onViewChange?.(item.id)}
+                className={`text-sm font-bold transition-all h-full relative ${isActive ? 'text-white' : 'text-[var(--text-secondary)] hover:text-white'}`}
               >
                 {item.label}
-              </Link>
+                {isActive && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--accent)] shadow-[0_0_10px_rgba(0,229,255,0.5)]"></div>
+                )}
+              </button>
             );
           })}
         </div>
