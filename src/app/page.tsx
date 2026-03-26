@@ -194,6 +194,8 @@ export default function Home() {
                 <div className="absolute top-1/2 -translate-y-1/2 right-12 z-[1000] flex flex-col space-y-4">
                   <MapDetailCard 
                     bathroom={selectedBathroom} 
+                    isSaved={savedIds.includes(selectedBathroom.id)}
+                    onToggleSave={toggleSave}
                     onClose={() => setSelectedBathroom(null)} 
                   />
                   <MapDirectionsCard 

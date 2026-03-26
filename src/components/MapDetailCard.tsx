@@ -1,14 +1,16 @@
 'use client';
 
 import { Bathroom } from '@/data/bathrooms';
-import { Star, Accessibility, Footprints, Info } from 'lucide-react';
+import { Star, Accessibility, Footprints, Info, Bookmark, BookmarkCheck } from 'lucide-react';
 
 interface MapDetailCardProps {
   bathroom: Bathroom;
+  isSaved?: boolean;
+  onToggleSave?: (id: string) => void;
   onClose?: () => void;
 }
 
-export default function MapDetailCard({ bathroom, onClose }: MapDetailCardProps) {
+export default function MapDetailCard({ bathroom, isSaved, onToggleSave, onClose }: MapDetailCardProps) {
   return (
     <div className="w-[380px] bg-[var(--surface)]/80 backdrop-blur-2xl border border-white/10 rounded-[32px] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.5)] animate-in fade-in slide-in-from-right-8 duration-500">
       <div className="h-44 w-full relative">
@@ -52,10 +54,14 @@ export default function MapDetailCard({ bathroom, onClose }: MapDetailCardProps)
           </div>
         </div>
 
-        <div className="flex justify-center">
-          <div className="bg-[#6366f1]/20 text-[#818cf8] px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-[#818cf8]/30 shadow-[0_0_20px_rgba(99,102,241,0.2)]">
-            Target
-          </div>
+        <div className="flex space-x-3">
+          <button 
+            onClick={() => onToggleSave?.(bathroom.id)}
+            className={`flex-1 py-4 rounded-2xl flex items-center justify-center space-x-3 font-bold text-sm transition-all ${isSaved ? 'bg-[var(--accent)] text-[var(--surface)] shadow-[0_15px_30px_rgba(0,229,255,0.2)]' : 'bg-[var(--surface-hover)] text-white border border-white/5 hover:bg-[var(--surface-active)]'}`}
+          >
+            {isSaved ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+            <span>{isSaved ? 'Saved' : 'Save Destination'}</span>
+          </button>
         </div>
       </div>
     </div>
