@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Mail, Lock, Globe, Apple, ChevronRight, Loader2, Info, User, MapPin, CheckCircle2 } from 'lucide-react';
 
 interface AuthViewProps {
-  onLogin: () => void;
+  onLogin: (name: string) => void;
 }
 
 export default function AuthView({ onLogin }: AuthViewProps) {
@@ -20,7 +20,7 @@ export default function AuthView({ onLogin }: AuthViewProps) {
     // Simulate auth delay for premium feel
     setTimeout(() => {
       setIsLoading(false);
-      onLogin();
+      onLogin(fullName || email.split('@')[0]);
     }, 1500);
   };
 
@@ -70,22 +70,20 @@ export default function AuthView({ onLogin }: AuthViewProps) {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {mode === 'signup' && (
-              <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-4">Full Name</label>
-                <div className="relative group">
-                  <User className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-[var(--accent)] transition-colors" />
-                  <input 
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder="Enter your full name"
-                    className="w-full bg-white/5 border border-white/5 rounded-2xl py-5 pl-14 pr-5 text-white placeholder:text-white/20 focus:outline-none focus:border-[var(--accent)]/40 focus:bg-white/10 transition-all font-medium text-sm"
-                    required
-                  />
-                </div>
+            <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+              <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-4">Full Name</label>
+              <div className="relative group">
+                <User className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-[var(--accent)] transition-colors" />
+                <input 
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Enter your full name"
+                  className="w-full bg-white/5 border border-white/5 rounded-2xl py-5 pl-14 pr-5 text-white placeholder:text-white/20 focus:outline-none focus:border-[var(--accent)]/40 focus:bg-white/10 transition-all font-medium text-sm"
+                  required
+                />
               </div>
-            )}
+            </div>
 
             <div className="space-y-2">
               <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-4">Email Address</label>

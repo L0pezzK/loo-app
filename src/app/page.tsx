@@ -108,9 +108,16 @@ export default function Home() {
     setViewMode('map'); // Reset view for next login
   };
 
-  const handleLogin = () => {
+  const handleLogin = (name: string) => {
     setIsAuthenticated(true);
     localStorage.setItem('loo-is-authenticated', 'true');
+    
+    // Update profile with the name from login/signup and clear avatar
+    setUserProfile(prev => ({
+      ...prev,
+      name,
+      avatar: '' // Clear profile picture for new user/session as requested
+    }));
     
     // Trigger welcome modal after transition
     setTimeout(() => {
