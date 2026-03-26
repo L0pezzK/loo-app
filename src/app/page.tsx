@@ -32,6 +32,11 @@ export default function Home() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [activeLanguage, setActiveLanguage] = useState<Language>('en');
   const [isWelcomeOpen, setIsWelcomeOpen] = useState(false);
+  const [filters, setFilters] = useState({
+    accessible: false,
+    free: false,
+    babyChanging: false
+  });
 
   const t = translations[activeLanguage];
   const [userProfile, setUserProfile] = useState({
@@ -95,10 +100,18 @@ export default function Home() {
     setViewMode('detail');
   };
 
-  const filteredBathrooms = mockBathrooms.filter(bathroom => 
-    bathroom.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    bathroom.address.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredBathrooms = mockBathrooms.filter(bathroom => {
+    const matchesSearch = bathroom.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         bathroom.address.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    if (!matchesSearch) return false;
+
+    if (filters.accessible && !bathroom.features.includes("Wheelchair Accessible")) return false;
+    if (filters.free && !bathroom.features.includes("Free")) return false;
+    if (filters.babyChanging && !bathroom.features.includes("Baby Changing")) return false;
+
+    return true;
+  });
 
   return (
     <div className={`flex flex-col flex-1 h-full bg-[var(--background)] overflow-hidden transition-colors duration-500 ${isDarkMode ? '' : 'light text-foreground'}`}>
@@ -111,7 +124,10 @@ export default function Home() {
       
       <div className="flex flex-1 overflow-hidden relative">
         {/* Left sidebar for Filters */}
-        <FilterSidebar />
+        <FilterSidebar 
+          filters={filters} 
+          onToggle={(key) => setFilters(prev => ({ ...prev, [key]: !prev[key] }))} 
+        />
 
         {/* List View - Main Content Area */}
         <main className="flex-1 overflow-y-auto p-12 custom-scrollbar relative">

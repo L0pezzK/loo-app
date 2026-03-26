@@ -2,11 +2,20 @@
 
 import { Accessibility, Coins, Baby, Search, Settings, HelpCircle } from 'lucide-react';
 
-export default function FilterSidebar() {
-  const filters = [
-    { label: 'Accessible', icon: Accessibility, active: true },
-    { label: 'Free', icon: Coins, active: false },
-    { label: 'Baby Changing', icon: Baby, active: false },
+interface FilterSidebarProps {
+  filters: {
+    accessible: boolean;
+    free: boolean;
+    babyChanging: boolean;
+  };
+  onToggle: (key: 'accessible' | 'free' | 'babyChanging') => void;
+}
+
+export default function FilterSidebar({ filters, onToggle }: FilterSidebarProps) {
+  const filterItems = [
+    { id: 'accessible' as const, label: 'Accessible', icon: Accessibility, active: filters.accessible },
+    { id: 'free' as const, label: 'Free', icon: Coins, active: filters.free },
+    { id: 'babyChanging' as const, label: 'Baby Changing', icon: Baby, active: filters.babyChanging },
   ];
 
   return (
@@ -17,9 +26,10 @@ export default function FilterSidebar() {
       </div>
 
       <div className="space-y-4 mb-10">
-        {filters.map((filter) => (
+        {filterItems.map((filter) => (
           <button 
-            key={filter.label}
+            key={filter.id}
+            onClick={() => onToggle(filter.id)}
             className={`w-full flex items-center justify-between px-5 py-3 rounded-2xl transition-all border ${filter.active ? 'bg-[var(--accent)]/10 border-[var(--accent)] text-white font-bold' : 'bg-[var(--surface)]/30 border-transparent text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-white'}`}
           >
             <div className="flex items-center space-x-3">
