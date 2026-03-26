@@ -14,6 +14,7 @@ import BathroomDetailView from '@/components/BathroomDetailView';
 import SavedView from '@/components/SavedView';
 import CommunityReviewsView from '@/components/CommunityReviewsView';
 import ProfileView from '@/components/ProfileView';
+import WelcomeModal from '@/components/WelcomeModal';
 import dynamic from 'next/dynamic';
 
 const DynamicMap = dynamic(() => import('@/components/Map'), {
@@ -30,6 +31,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [activeLanguage, setActiveLanguage] = useState<Language>('en');
+  const [isWelcomeOpen, setIsWelcomeOpen] = useState(false);
 
   const t = translations[activeLanguage];
   const [userProfile, setUserProfile] = useState({
@@ -51,6 +53,18 @@ export default function Home() {
 
     const savedLang = localStorage.getItem('loo-language');
     if (savedLang) setActiveLanguage(savedLang as Language);
+  }, []);
+
+  // Handle welcome modal session logic
+  useEffect(() => {
+    const welcomeShown = sessionStorage.getItem('loo-welcome-shown');
+    if (!welcomeShown) {
+      const timer = setTimeout(() => {
+        setIsWelcomeOpen(true);
+        sessionStorage.setItem('loo-welcome-shown', 'true');
+      }, 1500); // 1.5s delay for luxury feel
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   // Sync state to local storage
@@ -88,6 +102,11 @@ export default function Home() {
 
   return (
     <div className={`flex flex-col flex-1 h-full bg-[var(--background)] overflow-hidden transition-colors duration-500 ${isDarkMode ? '' : 'light text-foreground'}`}>
+      <WelcomeModal 
+        name={userProfile.name} 
+        isOpen={isWelcomeOpen} 
+        onClose={() => setIsWelcomeOpen(false)} 
+      />
       <Navbar currentView={viewMode} onViewChange={setViewMode} />
       
       <div className="flex flex-1 overflow-hidden relative">
