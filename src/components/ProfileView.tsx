@@ -31,6 +31,7 @@ interface ProfileViewProps {
   onToggleDarkMode: () => void;
   activeLanguage: Language;
   onLanguageChange: (lang: Language) => void;
+  onSignOut: () => void;
 }
 
 export default function ProfileView({ 
@@ -41,7 +42,8 @@ export default function ProfileView({
   isDarkMode, 
   onToggleDarkMode,
   activeLanguage,
-  onLanguageChange
+  onLanguageChange,
+  onSignOut
 }: ProfileViewProps) {
   const t = translations[activeLanguage];
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -89,7 +91,10 @@ export default function ProfileView({
           ))}
         </nav>
 
-        <button className="flex items-center space-x-4 px-6 py-5 rounded-2xl text-[var(--error)]/60 hover:text-[var(--error)] hover:bg-[var(--error)]/10 transition-all border border-transparent hover:border-[var(--error)]/20 mt-auto">
+        <button 
+          onClick={onSignOut}
+          className="flex items-center space-x-4 px-6 py-5 rounded-2xl text-[var(--error)]/60 hover:text-[var(--error)] hover:bg-[var(--error)]/10 transition-all border border-transparent hover:border-[var(--error)]/20 mt-auto"
+        >
           <LogOut className="w-5 h-5" />
           <span className="font-black text-sm uppercase tracking-widest">Sign Out</span>
         </button>

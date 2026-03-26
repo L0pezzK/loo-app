@@ -15,6 +15,7 @@ import SavedView from '@/components/SavedView';
 import CommunityReviewsView from '@/components/CommunityReviewsView';
 import ProfileView from '@/components/ProfileView';
 import WelcomeModal from '@/components/WelcomeModal';
+import AuthView from '@/components/AuthView';
 import dynamic from 'next/dynamic';
 
 const DynamicMap = dynamic(() => import('@/components/Map'), {
@@ -38,6 +39,7 @@ export default function Home() {
     babyChanging: false
   });
   const [sortBy, setSortBy] = useState<'distance' | 'rating'>('distance');
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true); // Default true for dev, but let's check localStorage
 
   const t = translations[activeLanguage];
   const [userProfile, setUserProfile] = useState({
@@ -59,6 +61,9 @@ export default function Home() {
 
     const savedLang = localStorage.getItem('loo-language');
     if (savedLang) setActiveLanguage(savedLang as Language);
+
+    const savedAuth = localStorage.getItem('loo-is-authenticated');
+    if (savedAuth !== null) setIsAuthenticated(JSON.parse(savedAuth));
   }, []);
 
   // Handle welcome modal session logic
@@ -96,6 +101,17 @@ export default function Home() {
     );
   };
 
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.setItem('loo-is-authenticated', 'false');
+    setViewMode('map'); // Reset view for next login
+  };
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+    localStorage.setItem('loo-is-authenticated', 'true');
+  };
+
   const handleBathroomSelect = (bathroom: Bathroom) => {
     setSelectedBathroom(bathroom);
     setViewMode('detail');
@@ -121,6 +137,8 @@ export default function Home() {
         return b.rating - a.rating;
       }
     });
+
+  if (!isAuthenticated) return <AuthView onLogin={handleLogin} />;
 
   return (
     <div className={`flex flex-col flex-1 h-full bg-[var(--background)] overflow-hidden transition-colors duration-500 ${isDarkMode ? '' : 'light text-foreground'}`}>
@@ -267,6 +285,7 @@ export default function Home() {
               onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
               activeLanguage={activeLanguage}
               onLanguageChange={setActiveLanguage}
+              onSignOut={handleLogout}
             />
             <MapDashboard currentView={viewMode} onViewChange={setViewMode} />
           </div>
