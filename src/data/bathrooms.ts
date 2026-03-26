@@ -45,10 +45,10 @@ export const mockBathrooms: Bathroom[] = [
     fee: '€0.50 (Free for LOO+)',
     distance: 400,
     walkingTime: 5,
-    image: "https://images.unsplash.com/photo-1502602898657-3e917247a183?auto=format&fit=crop&q=80&w=800",
+    image: "/images/bathrooms/concorde.png",
     gallery: [
-      "https://images.unsplash.com/photo-1549144511-f099e773c147?auto=format&fit=crop&q=80&w=800",
-      "https://images.unsplash.com/photo-1471623197353-3fe7088d9475?auto=format&fit=crop&q=80&w=800"
+      "/images/bathrooms/concorde.png",
+      "https://images.unsplash.com/photo-1549144511-f099e773c147?auto=format&fit=crop&q=80&w=800"
     ],
     features: ["Free", "Wheelchair Accessible", "Baby Changing"],
     detailedFeatures: [
@@ -100,9 +100,9 @@ export const mockBathrooms: Bathroom[] = [
     fee: '€0.80',
     distance: 850,
     walkingTime: 11,
-    image: "https://images.unsplash.com/photo-1550114891-22971173d937?auto=format&fit=crop&q=80&w=800",
+    image: "/images/bathrooms/tuileries.png",
     gallery: [
-      "https://images.unsplash.com/photo-1510673398445-94f476ef2cbc?auto=format&fit=crop&q=80&w=800"
+      "/images/bathrooms/tuileries.png"
     ],
     features: ["Wheelchair Accessible"],
     detailedFeatures: [
@@ -133,7 +133,7 @@ export const mockBathrooms: Bathroom[] = [
     fee: 'Free',
     distance: 1200,
     walkingTime: 15,
-    image: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=800",
+    image: "/images/bathrooms/louvre.png",
     features: ["Free", "Gender Neutral"],
     detailedFeatures: [
       { icon: 'gender', label: 'Gender neutral' },
@@ -162,7 +162,7 @@ export const mockBathrooms: Bathroom[] = [
     fee: '€1.00',
     distance: 2000,
     walkingTime: 25,
-    image: "https://images.unsplash.com/photo-1551634761-30960099496b?auto=format&fit=crop&q=80&w=800",
+    image: "/images/bathrooms/st_lazare.png",
     features: ["Wheelchair Accessible", "Baby Changing", "24/7"],
     detailedFeatures: [
       { icon: 'door', label: 'Extra-wide door' },

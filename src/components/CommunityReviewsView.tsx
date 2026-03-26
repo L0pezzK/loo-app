@@ -16,7 +16,7 @@ export default function CommunityReviewsView() {
       author: "Amélie Durand",
       avatar: "https://i.pravatar.cc/150?u=amelie",
       location: "Palais de Justice",
-      image: "https://images.unsplash.com/photo-1549144511-f099e773c147?auto=format&fit=crop&q=80&w=800",
+      image: "/images/bathrooms/louvre.png",
       time: "2 hours ago",
       rating: 5,
       text: "Cleanest one near the Louvre! The self-cleaning mechanism actually works here and there was no queue at 11 AM. A life saver during museum hop!",
@@ -28,7 +28,7 @@ export default function CommunityReviewsView() {
       author: "Julien Lefebvre",
       avatar: "https://i.pravatar.cc/150?u=julien",
       location: "Place des Vosges - North",
-      image: "https://images.unsplash.com/photo-1550114891-22971173d937?auto=format&fit=crop&q=80&w=800",
+      image: "/images/bathrooms/tuileries.png",
       time: "5 hours ago",
       rating: 4,
       text: "Pretty decent for a public one. Accessibility ramp is wide enough for double strollers. Water pressure was a bit low though.",
@@ -40,7 +40,7 @@ export default function CommunityReviewsView() {
       author: "Marc Bernard",
       avatar: "https://i.pravatar.cc/150?u=marc",
       location: "Châtelet Metro Hub",
-      image: "https://images.unsplash.com/photo-1551634761-30960099496b?auto=format&fit=crop&q=80&w=800",
+      image: "/images/bathrooms/st_lazare.png",
       time: "Yesterday",
       rating: 2,
       text: "Avoid this one if possible. Maintenance seems to have been skipped today. Better off walking to the nearby department store.",
@@ -177,13 +177,13 @@ export default function CommunityReviewsView() {
               <div className="space-y-6">
                 <TopRatedSidebarCard 
                   name="Jardin du Luxembourg - East"
-                  image="https://images.unsplash.com/photo-1550119810-cf4aa1828f41?auto=format&fit=crop&q=80&w=800"
+                  image="/images/bathrooms/tuileries.png"
                   cleanPercent={98}
                   label="Full Access"
                 />
                 <TopRatedSidebarCard 
                   name="Quai d'Orsay - Floating Loo"
-                  image="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=800"
+                  image="/images/bathrooms/concorde.png"
                   cleanPercent={92}
                   label="Partial Access"
                   isNearby={true}
