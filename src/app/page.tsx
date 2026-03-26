@@ -37,6 +37,7 @@ export default function Home() {
     free: false,
     babyChanging: false
   });
+  const [sortBy, setSortBy] = useState<'distance' | 'rating'>('distance');
 
   const t = translations[activeLanguage];
   const [userProfile, setUserProfile] = useState({
@@ -100,18 +101,26 @@ export default function Home() {
     setViewMode('detail');
   };
 
-  const filteredBathrooms = mockBathrooms.filter(bathroom => {
-    const matchesSearch = bathroom.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         bathroom.address.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    if (!matchesSearch) return false;
+  const filteredBathrooms = mockBathrooms
+    .filter(bathroom => {
+      const matchesSearch = bathroom.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           bathroom.address.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      if (!matchesSearch) return false;
 
-    if (filters.accessible && !bathroom.features.includes("Wheelchair Accessible")) return false;
-    if (filters.free && !bathroom.features.includes("Free")) return false;
-    if (filters.babyChanging && !bathroom.features.includes("Baby Changing")) return false;
+      if (filters.accessible && !bathroom.features.includes("Wheelchair Accessible")) return false;
+      if (filters.free && !bathroom.features.includes("Free")) return false;
+      if (filters.babyChanging && !bathroom.features.includes("Baby Changing")) return false;
 
-    return true;
-  });
+      return true;
+    })
+    .sort((a, b) => {
+      if (sortBy === 'distance') {
+        return (a.distance || 0) - (b.distance || 0);
+      } else {
+        return b.rating - a.rating;
+      }
+    });
 
   return (
     <div className={`flex flex-col flex-1 h-full bg-[var(--background)] overflow-hidden transition-colors duration-500 ${isDarkMode ? '' : 'light text-foreground'}`}>
@@ -138,10 +147,16 @@ export default function Home() {
                 <p className="text-[var(--text-secondary)] font-medium">{filteredBathrooms.length} {t.bathrooms.locations_found} near you in Paris</p>
               </div>
               <div className="flex items-center space-x-3">
-                <button className="px-5 py-2.5 bg-[var(--surface)] text-[var(--foreground)] text-xs font-bold rounded-xl border border-[var(--border)] hover:bg-[var(--surface-hover)] transition-all">
+                <button 
+                  onClick={() => setSortBy('distance')}
+                  className={`px-5 py-2.5 rounded-xl border text-xs font-bold transition-all ${sortBy === 'distance' ? 'bg-[var(--accent)] text-[var(--surface)] border-[var(--accent)] shadow-[0_0_15px_rgba(0,229,255,0.3)]' : 'bg-[var(--surface)] text-[var(--foreground)] border-[var(--border)] hover:bg-[var(--surface-hover)]'}`}
+                >
                   {t.bathrooms.sort_distance}
                 </button>
-                <button className="px-5 py-2.5 bg-[var(--surface)] text-[var(--foreground)] text-xs font-bold rounded-xl border border-[var(--border)] hover:bg-[var(--surface-hover)] transition-all">
+                <button 
+                  onClick={() => setSortBy('rating')}
+                  className={`px-5 py-2.5 rounded-xl border text-xs font-bold transition-all ${sortBy === 'rating' ? 'bg-[var(--accent)] text-[var(--surface)] border-[var(--accent)] shadow-[0_0_15px_rgba(0,229,255,0.3)]' : 'bg-[var(--surface)] text-[var(--foreground)] border-[var(--border)] hover:bg-[var(--surface-hover)]'}`}
+                >
                   {t.bathrooms.sort_rating}
                 </button>
               </div>
