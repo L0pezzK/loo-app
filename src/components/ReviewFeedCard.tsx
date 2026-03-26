@@ -6,6 +6,7 @@ interface ReviewFeedCardProps {
   author: string;
   avatar: string;
   location: string;
+  image?: string;
   time: string;
   rating: number;
   text: string;
@@ -18,6 +19,7 @@ export default function ReviewFeedCard({
   author,
   avatar,
   location,
+  image,
   time,
   rating,
   text,
@@ -51,7 +53,14 @@ export default function ReviewFeedCard({
       </div>
 
       <div className="mb-8">
-        <h5 className="text-[var(--accent)] font-black text-sm mb-3 cursor-pointer hover:underline">{location}</h5>
+        <div className="flex items-center space-x-3 mb-3">
+          {image && (
+            <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/10 shrink-0">
+              <img src={image} alt={location} className="w-full h-full object-cover" />
+            </div>
+          )}
+          <h5 className="text-[var(--accent)] font-black text-sm cursor-pointer hover:underline uppercase tracking-tight">{location}</h5>
+        </div>
         <p className="text-white/80 text-base leading-relaxed font-medium italic">
           "{text}"
         </p>

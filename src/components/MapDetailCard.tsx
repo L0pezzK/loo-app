@@ -11,7 +11,18 @@ interface MapDetailCardProps {
 export default function MapDetailCard({ bathroom, onClose }: MapDetailCardProps) {
   return (
     <div className="w-[380px] bg-[var(--surface)]/80 backdrop-blur-2xl border border-white/10 rounded-[32px] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.5)] animate-in fade-in slide-in-from-right-8 duration-500">
-      <div className="p-8">
+      <div className="h-44 w-full relative">
+        <img 
+          src={bathroom.image} 
+          alt={bathroom.name} 
+          className="w-full h-full object-cover" 
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--surface)]/80 to-transparent"></div>
+        <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest backdrop-blur-md ${bathroom.isOpen ? 'bg-[var(--success)]/20 text-[var(--success)] border border-[var(--success)]/30' : 'bg-[var(--error)]/20 text-[var(--error)] border border-[var(--error)]/30'}`}>
+          {bathroom.isOpen ? 'Open' : 'Closed'}
+        </div>
+      </div>
+      <div className="p-8 pt-2">
         <div className="flex justify-between items-start mb-6">
           <h3 className="text-3xl font-black text-white tracking-tighter leading-none">{bathroom.name}</h3>
           <div className="bg-[var(--accent)]/10 text-[var(--accent)] px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-[var(--accent)]/20">
