@@ -104,12 +104,19 @@ export default function Home() {
   const handleLogout = () => {
     setIsAuthenticated(false);
     localStorage.setItem('loo-is-authenticated', 'false');
+    sessionStorage.removeItem('loo-welcome-shown');
     setViewMode('map'); // Reset view for next login
   };
 
   const handleLogin = () => {
     setIsAuthenticated(true);
     localStorage.setItem('loo-is-authenticated', 'true');
+    
+    // Trigger welcome modal after transition
+    setTimeout(() => {
+      setIsWelcomeOpen(true);
+      sessionStorage.setItem('loo-welcome-shown', 'true');
+    }, 1000);
   };
 
   const handleBathroomSelect = (bathroom: Bathroom) => {
