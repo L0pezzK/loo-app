@@ -152,7 +152,7 @@ export default function Home() {
       }
     });
 
-  if (!isAuthenticated) return <AuthView onLogin={handleLogin} />;
+  if (!isAuthenticated) return <AuthView onLogin={handleLogin} isDarkMode={isDarkMode} onToggleDarkMode={() => setIsDarkMode(!isDarkMode)} />;
 
   return (
     <div className={`flex flex-col flex-1 h-full bg-[var(--background)] overflow-hidden transition-colors duration-500 ${isDarkMode ? '' : 'light text-foreground'}`}>
@@ -160,6 +160,7 @@ export default function Home() {
         name={userProfile.name} 
         isOpen={isWelcomeOpen} 
         onClose={() => setIsWelcomeOpen(false)} 
+        isDarkMode={isDarkMode}
       />
       <Navbar currentView={viewMode} onViewChange={setViewMode} />
       
